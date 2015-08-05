@@ -1,0 +1,21 @@
+Package: obpgcrawler
+Title: A limited THREDDS crawler for programmatically working with the OpeNDAP
+    data offerings from http://oceandata.sci.gsfc.nasa.gov/opendap/
+Version: 0.1
+Depends:
+    R (>= 3.0)
+Imports:
+    methods,
+    httr,
+    XML
+Maintainer: Ben Tupper <btupper@bigelow.org>
+Author: Ben Tupper <btupper@bigelow.org>
+License: GPL (>= 2)
+Collate:
+    'Thredds.R'
+    'Catalog.R'
+    'Datasets.R'
+    'Dataset.R'
+    'Service.R'
+    'TopCatalog.R'
+    'misc.R'
