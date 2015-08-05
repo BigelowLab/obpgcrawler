@@ -8,7 +8,9 @@
 #### Requirements
 
 [R >= 3.0](http://cran.r-project.org)
+
 [httr](http://cran.r-project.org/web/packages/httr/index.html)
+
 [XML](http://cran.r-project.org/web/packages/XML/index.html)
 
 #### Installation
@@ -220,7 +222,7 @@ Reference Class: "DatasetRefClass"
 
 #### Accessing the data
 
-If you want to access a dataset you can use the [ncdf4](http://cran.r-project.org/web/packages/ncdf4/index.html) package to access.
+A dataset can be accessed using the [ncdf4](http://cran.r-project.org/web/packages/ncdf4/index.html) package.
 
 ```R
 library(ncdf4)
