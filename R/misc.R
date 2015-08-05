@@ -90,7 +90,8 @@ parse_node <- function(node, url = NULL){
 #' @param day character or numeric, three digit year of day(s) - ignored if what = most_recent
 #' @param what character, optional filters (defaults to "all" but "most_recent" works)
 #' @param greplargs list or NULL, if a list the provide two elements,
-#'    pattern=character and fixed=logical, which are arguments for \code{grepl}
+#'    pattern=character and fixed=logical, which are arguments for \code{grepl} If fixed is FALSE
+#'    then be sure to provide a regex for the pattern value.
 #' @return list of DatasetRefClass or NULL
 #' @examples
 #'    \dontrun{

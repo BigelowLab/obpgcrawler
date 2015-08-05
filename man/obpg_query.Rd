@@ -24,7 +24,8 @@ obpg_query(top = "http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
 \item{what}{character, optional filters (defaults to "all" but "most_recent" works)}
 
 \item{greplargs}{list or NULL, if a list the provide two elements,
-pattern=character and fixed=logical, which are arguments for \code{grepl}}
+pattern=character and fixed=logical, which are arguments for \code{grepl} If fixed is FALSE
+then be sure to provide a regex for the pattern value.}
 }
 \value{
 list of DatasetRefClass or NULL
