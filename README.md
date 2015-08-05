@@ -183,29 +183,26 @@ $A2015201.L3m_DAY_NSST_sst_4km.nc
 Reference Class: "DatasetRefClass"
   url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_4km.nc
   children: dataSize date access
-  datasets: NA
   dataSize:47093655
-  date:NA
+  date:2015-08-05T11:28:29
   serviceName:dap
   urlPath:/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_4km.nc
 
 $A2015201.L3m_DAY_NSST_sst_9km.nc
-Reference Class: "DatasetRefClass" 
+Reference Class: "DatasetRefClass"
   url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_9km.nc
   children: dataSize date access
-  datasets: NA
   dataSize:12376940
-  date:NA
+  date:2015-08-05T11:28:41
   serviceName:dap
   urlPath:/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_9km.nc
 
 $A2015201.L3m_DAY_SST4_sst4_4km.nc
-Reference Class: "DatasetRefClass" 
+Reference Class: "DatasetRefClass"
   url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_4km.nc
   children: dataSize date access
-  datasets: NA
   dataSize:47143175
-  date:NA
+  date:2015-08-05T11:22:01
   serviceName:dap
   urlPath:/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_4km.nc
 
@@ -213,9 +210,8 @@ $A2015201.L3m_DAY_SST4_sst4_9km.nc
 Reference Class: "DatasetRefClass"
   url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_9km.nc
   children: dataSize date access
-  datasets: NA
   dataSize:12441580
-  date:NA
+  date:2015-08-05T11:22:14
   serviceName:dap
   urlPath:/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_9km.nc
 ```

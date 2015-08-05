@@ -177,7 +177,7 @@ obpg_query <- function(
                      if (any(ix)) R[names(datasets[ix])] <- datasets[ix]
                      
                   } else {
-                     R[names(datasets[ix])] <- datasets[ix]
+                     R[names(datasets)] <- datasets
                   }  # greplargs?
                } # day loop
             } # day is found
