@@ -1,19 +1,19 @@
 #### OBPG Crawler
 
-[Ocean Biologiy Procesing Group](http://oceancolor.gsfc.nasa.gov/cms/homepage) provides OpeNDAP access to data.  `obpg` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](http://oceancolor.gsfc.nasa.gov/cms/homepage).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
+[Ocean Biology Procesing Group](http://oceancolor.gsfc.nasa.gov/cms/homepage) provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](http://oceancolor.gsfc.nasa.gov/cms/homepage).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
 
 + Retrieve the most recent 8DAY 4km CHLA from MODISA (example below)
 + Retrieve MODISA Chlorophyll 8DAY 4km L3SMI's from days 1-30 in 2014 and 2015 (example below)
 
 #### Requirements
 
-    [R >= 3.0](http://cran.r-project.org)
-    [httr](http://cran.r-project.org/web/packages/httr/index.html)
-    [XML](http://cran.r-project.org/web/packages/XML/index.html)
+[R >= 3.0](http://cran.r-project.org)
+[httr](http://cran.r-project.org/web/packages/httr/index.html)
+[XML](http://cran.r-project.org/web/packages/XML/index.html)
 
 #### Installation
 
-It is easiest to install with devtools
+It is easiest to install with [devtools](https://cran.r-project.org/web/packages/devtools/index.html)
 
 ```R
 library(devtools)
@@ -33,16 +33,18 @@ BPG's `dataset` unfortunately comes in two flavors: collections of datasets and 
 OBPG data is organized by PLATFORM, PRODUCT, YEAR, DAY.  Data files are stored at the day level.
 
 + PLATFORM such as MODISA MODIST OCTS SeaWiFS VIIRS
-+ PRODUCT such as L3SMI by I suppose other products such as L2 etc might come along
++ PRODUCT such as L3SMI but I suppose other products such as L2 etc might come along
 + YEAR such as 2002 2003 2004 ... 2011 2012 2013 2014 2015
 + DAY such as 001 002 003 ...  360 361
 
 
-#### The way good easy way example
+#### Way good easy way examples
 
-Q: What is in the most recent offering from platform = MODISA product = L3SMI of 8day 4km chla?
+These two examples show how to use the `obpg_query()` function to simply collect  one or more dataset descriptions.
 
-A: Yes, with obpg_query()!
+Q: What are the most recent offerings from MODISA L3SMI's of 8day 4km chla?
+
+A: Go gettum with obpg_query()!
 
 ```R
 library(obpgcrawler)
@@ -150,7 +152,7 @@ Next we select the 2015 catalog.
 YEARS <- L3SMI$get_catalogs()
 Y2015 <- YEARS[['2015']]$GET()
 Y2015
-Reference Class: "TopCatalogRef" (from the global environment)
+Reference Class: "TopCatalogRef" 
   url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/catalog.xml
   children: service dataset
   catalogs: 001 002 003 ... 197 198 199 200 201
@@ -164,7 +166,7 @@ And now we select the most recent day (let's assume that is day 201)
 DAYS <- Y2015$get_catalogs()
 D201 <- DAYS[['201']]$GET()
 D201
-Reference Class: "TopCatalogRef" (from the global environment)
+Reference Class: "TopCatalogRef" 
   url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/catalog.xml
   children: service dataset
   datasets: A2015201.L3m_DAY_NSST_sst_4km.nc A2015201.L3m_DAY_NSST_sst_9km.nc A2015201.L3m_DAY_SST4_sst4_4km.nc A2015201.L3m_DAY_SST4_sst4_9km.nc
