@@ -3,8 +3,22 @@
 [Ocean Biologiy Procesing Group](http://oceancolor.gsfc.nasa.gov/cms/homepage) provides OpeNDAP access to data.  `obpg` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](http://oceancolor.gsfc.nasa.gov/cms/homepage).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
 
 + Retrieve the most recent 8DAY 4km CHLA from MODISA (example below)
-+ Retrieve SST4 9km for 2014-001
++ Retrieve MODISA Chlorophyll 8DAY 4km L3SMI's from days 1-30 in 2014 and 2015 (example below)
 
+#### Requirements
+
+    [R >= 3.0](http://cran.r-project.org)
+    [httr](http://cran.r-project.org/web/packages/httr/index.html)
+    [XML](http://cran.r-project.org/web/packages/XML/index.html)
+
+#### Installation
+
+It is easiest to install with devtools
+
+```R
+library(devtools)
+install_github("btupper/obpgcrawler")
+```
 
 #### Classes
 
@@ -12,26 +26,73 @@
 
 `CatalogRefClass` is a pointer to `TopCatalogRefClass`  
  
-BPG's `dataset` unfortunately comes in two flavors: collections of datasets and direct datasets.  I split these into  `DatasetsRefClass` (collections) and `DatasetRefClass` (direct); the latter has an 'access' child node the former does not.  Anywho, a collection is a listing of one or more direct datasets of catalogs.  A direct dataset is a pointer to an actual file (the very thing we seek!)
+BPG's `dataset` unfortunately comes in two flavors: collections of datasets and direct datasets.  I split these into  `DatasetsRefClass` (collections) and `DatasetRefClass` (direct); the latter has an 'access' child node the former does not.  A collection is a listing of one or more datasets (either direct or catalogs).  A direct dataset is a pointer to an actual OpeNDAP resource (like a NetCDF file, the very thing we seek!)
 
-#### Organization
+#### Data Organization
 
-OBPG data is organized by PLATFORM, PRODUCT, YEAR, DAY.  Data is stored at the day level.
+OBPG data is organized by PLATFORM, PRODUCT, YEAR, DAY.  Data files are stored at the day level.
 
 + PLATFORM such as MODISA MODIST OCTS SeaWiFS VIIRS
 + PRODUCT such as L3SMI by I suppose other products such as L2 etc might come along
-+ YEAR such as 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015
-+ DAY such as 001 002 003 ...
++ YEAR such as 2002 2003 2004 ... 2011 2012 2013 2014 2015
++ DAY such as 001 002 003 ...  360 361
 
 
 #### The way good easy way example
 
 Q: What is in the most recent offering from platform = MODISA product = L3SMI of 8day 4km chla?
 
-A: Query!
+A: Yes, with obpg_query()!
 
-First we build our query list
+```R
+library(obpgcrawler)
+query <- obpg_query(top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
+   platform = 'MODISA', 
+   product = 'L3SMI',
+   what = 'most_recent',
+   greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
+query
+$A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
+Reference Class: "DatasetRefClass"
+  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/193/A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
+  children: dataSize date access
+  dataSize:26844930
+  date:2015-08-05T11:05:15
+  serviceName:dap
+  urlPath:/MODISA/L3SMI/2015/193/A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
+```
 
+Q: Can I get all of the MODISA Chlorophyll 8-day L3SMI's from days 1-30 in 2014 and 2015?
+
+A: Yes, with obpg_query()!
+
+```R
+query <- obpg_query(year = c('2014', '2015'),day = 1:30,
+   greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
+query
+$A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
+Reference Class: "DatasetRefClass"
+  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2014/001/A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
+  children: dataSize date access
+  dataSize:30411689
+  date:2015-06-26T02:52:51
+  serviceName:dap
+  urlPath:/MODISA/L3SMI/2014/001/A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
+
+    <... snip there are 8 of them ...>
+
+$A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
+Reference Class: "DatasetRefClass"
+  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/025/A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
+  children: dataSize date access
+  dataSize:31609299
+  date:2015-06-26T02:52:55
+  serviceName:dap
+  urlPath:/MODISA/L3SMI/2015/025/A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
+```
+
+
+Woooohooo!
 
 
 
@@ -155,9 +216,12 @@ Reference Class: "DatasetRefClass"
   urlPath:/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_9km.nc
 ```
 
-If you want to access one you can use the [ncdf4](http://cran.r-project.org/web/packages/ncdf4/index.html) package to access.
+#### Accessing the data
+
+If you want to access a dataset you can use the [ncdf4](http://cran.r-project.org/web/packages/ncdf4/index.html) package to access.
 
 ```R
+library(ncdf4)
 nc <- ncdf4::nc_open(dataset[['A2015201.L3m_DAY_SST4_sst4_9km.nc']]$url)
 nc
 > nc
@@ -199,60 +263,9 @@ File http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L
         project: Ocean Biology Processing Group (NASA/GSFC/OBPG)
         platform: Aqua
         temporal_range: day
-        processing_version: 2014.0
-        date_created: 2015-08-05T11:21:01.000Z
-        history: smigen par=A2015201.L3m_DAY_SST4_sst4_9km.nc.param
-        l2_flag_names: LAND,~HISOLZEN
-        time_coverage_start: 2015-07-19T12:00:09.000Z
-        time_coverage_end: 2015-07-20T13:15:08.000Z
-        start_orbit_number: 70254
-        end_orbit_number: 70269
-        map_projection: Equidistant Cylindrical
-        latitude_units: degrees_north
-        longitude_units: degrees_east
-        northernmost_latitude: 90
-        southernmost_latitude: -90
-        westernmost_longitude: -180
-        easternmost_longitude: 180
-        geospatial_lat_max: 90
-        geospatial_lat_min: -90
-        geospatial_lon_max: 180
-        geospatial_lon_min: -180
-        grid_mapping_name: latitude_longitude
-        latitude_step: 0.0833333358168602
-        longitude_step: 0.0833333358168602
-        sw_point_latitude: -89.9583358764648
-        sw_point_longitude: -179.95832824707
-        geospatial_lon_resolution: 9.19999980926514
-        geospatial_lat_resolution: 9.19999980926514
-        geospatial_lat_units: km
-        geospatial_lon_units: km
-        spatialResolution: 9.20 km
-        data_bins: 1364019
-        number_of_lines: 2160
-        number_of_columns: 4320
-        measure: Mean
-        data_minimum: -1.0549989938736
-        data_maximum: 33.6549987792969
-        suggested_image_scaling_minimum: -2
-        suggested_image_scaling_maximum: 45
-        suggested_image_scaling_type: LINEAR
-        suggested_image_scaling_applied: Yes
-        _lastModified: 2015-08-05T11:21:01.000Z
-        Conventions: CF-1.6
-        institution: NASA Goddard Space Flight Center, Ocean Ecology Laboratory, Ocean Biology Processing Group
-        standard_name_vocabulary: NetCDF Climate and Forecast (CF) Metadata Convention
-        Metadata_Conventions: Unidata Dataset Discovery v1.0
-        naming_authority: gov.nasa.gsfc.sci.oceandata
-        id: A2015201.L3b_DAY_SST4.nc/L3/A2015201.L3b_DAY_SST4.nc
-        license: http://science.nasa.gov/earth-science/earth-science-data/data-information-policy/
-        creator_name: NASA/GSFC/OBPG
-        publisher_name: NASA/GSFC/OBPG
-        creator_email: data@oceancolor.gsfc.nasa.gov
-        publisher_email: data@oceancolor.gsfc.nasa.gov
-        creator_url: http://oceandata.sci.gsfc.nasa.gov
-        publisher_url: http://oceandata.sci.gsfc.nasa.gov
-        processing_level: L3 Mapped
+            .
+            .
+            .
         cdm_data_type: grid
         identifier_product_doi_authority: http://dx.doi.org
         identifier_product_doi: 10.5067/AQUA/MODIS_OC.2014.0

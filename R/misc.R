@@ -54,9 +54,9 @@ parse_node <- function(node, url = NULL){
    }
    
    if (inherits(node, 'response')){
-      if (status_code(node) == 200){
+      if (httr::status_code(node) == 200){
          if (is.null(url)) url <- node$url
-         node <- xmlRoot(content(node))
+         node <- XML::xmlRoot(httr::content(node))
       } else {
          cat("response status != 200\n")
          print(node)
@@ -86,9 +86,9 @@ parse_node <- function(node, url = NULL){
 #' @param top character, uri of the top catalog
 #' @param platform character, the name of the platform (MODISA, MODIST, OCTS, SeaWiFS, VIIRS, etc.)
 #' @param product character, the product type (L3SMI, etc.)
-#' @param year character, four digit year - ignored if what = most_recent
-#' @param day character, three digit year of day - ignored if what = most_recent
-#' @param what character, optional filters (defults to "all" but "most_recent" works)
+#' @param year character or numeric, four digit year(s) - ignored if what = most_recent
+#' @param day character or numeric, three digit year of day(s) - ignored if what = most_recent
+#' @param what character, optional filters (defaults to "all" but "most_recent" works)
 #' @param greplargs list or NULL, if a list the provide two elements,
 #'    pattern=character and fixed=logical, which are arguments for \code{grepl}
 #' @return list of DatasetRefClass or NULL

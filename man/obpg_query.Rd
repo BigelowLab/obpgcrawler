@@ -17,11 +17,11 @@ obpg_query(top = "http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
 
 \item{product}{character, the product type (L3SMI, etc.)}
 
-\item{year}{character, four digit year - ignored if what = most_recent}
+\item{year}{character or numeric, four digit year(s) - ignored if what = most_recent}
 
-\item{day}{character, three digit year of day - ignored if what = most_recent}
+\item{day}{character or numeric, three digit year of day(s) - ignored if what = most_recent}
 
-\item{what}{character, optional filters (defults to "all" but "most_recent" works)}
+\item{what}{character, optional filters (defaults to "all" but "most_recent" works)}
 
 \item{greplargs}{list or NULL, if a list the provide two elements,
 pattern=character and fixed=logical, which are arguments for \code{grepl}}
