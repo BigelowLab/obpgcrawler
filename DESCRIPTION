@@ -10,6 +10,7 @@ Imports:
     XML
 Maintainer: Ben Tupper <btupper@bigelow.org>
 Author: Ben Tupper <btupper@bigelow.org>
+URL: https://github.com/btupper/obpgcrawler
 License: GPL (>= 2)
 Collate:
     'Thredds.R'

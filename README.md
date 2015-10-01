@@ -1,6 +1,6 @@
 #### OBPG Crawler
 
-[Ocean Biology Procesing Group](http://oceancolor.gsfc.nasa.gov/cms/homepage) provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](http://oceancolor.gsfc.nasa.gov/cms/homepage).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
+[Ocean Biology Processing Group](http://oceancolor.gsfc.nasa.gov/cms/homepage) provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](http://oceancolor.gsfc.nasa.gov/cms/homepage).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
 
 + Retrieve the most recent 8DAY 4km CHLA from MODISA (example below)
 + Retrieve MODISA Chlorophyll 8DAY 4km L3SMI's from days 1-30 in 2014 and 2015 (example below)
@@ -218,57 +218,36 @@ Reference Class: "DatasetRefClass"
 
 #### Accessing the data
 
-A dataset can be accessed using the [ncdf4](http://cran.r-project.org/web/packages/ncdf4/index.html) package.
+A dataset can be accessed using the [spnc](https://github.com/btupper/spnc) package.
 
 ```R
-library(ncdf4)
-nc <- ncdf4::nc_open(dataset[['A2015201.L3m_DAY_SST4_sst4_9km.nc']]$url)
-nc
-> nc
-File http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_9km.nc (NC_FORMAT_CLASSIC):
+library(spnc)
+query <- obpg_query(year = c('2014', '2015'),day = 1:30,
++    greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
+chl <- SPNC(query[['A20140012014008.L3m_8D_CHL_chlor_a_4km.nc']]$url)
+chl
+# Reference Class: "L3SMIRefClass" 
+#   flavor: source=L3SMI type=raster local=FALSE 
+#   state: opened 
+#   bounding box: -180 180 -90 90 
+#   VARS: palette chlor_a 
+#   DIMS: eightbitcolor=256 lat=4320 lon=8640 rgb=3 
+#   LON: [ -179.979172, 179.979172] 
+#   LAT: [ 89.979164, -89.979179] 
+#   TIME: [ 2014-01-01, 2014-01-01]
 
-     3 variables (excluding dimension variables):
-        byte palette[eightbitcolor,rgb]   
-        short sst4[lon,lat]   
-            long_name: 4um Sea Surface Temperature
-            units: degree_C
-            standard_name: sea_surface_temperature
-            display_scale: linear
-            display_min: -2
-            display_max: 45
-            scale_factor: 0.000717184972018003
-            add_offset: -2
-        short qual_sst4[lon,lat]   
+bb <- c(xmin = -77, xmax = -63, ymin = 35, ymax = 46)
 
-     4 dimensions:
-        eightbitcolor  Size:256
-        lat  Size:2160
-            long_name: Latitude
-            units: degree_north
-            _FillValue: -32767
-            valid_min: -90
-            valid_max: 90
-        lon  Size:4320
-            long_name: Longitude
-            units: degree_east
-            _FillValue: -32767
-            valid_min: -180
-            valid_max: 180
-        rgb  Size:3
+r <- chl$get_raster(what = 'chlor_a', bb = bb)
+# r
+# class       : RasterStack 
+# dimensions  : 264, 337, 88968, 1  (nrow, ncol, ncell, nlayers)
+# resolution  : 0.04154302, 0.04150885  (x, y)
+# extent      : -77.02083, -63.02083, 35.02083, 45.97917  (xmin, xmax, ymin, ymax)
+# coord. ref. : +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
+# names       :  layer_1 
+# min values  : 0.115527 
+# max values  : 68.65778 
 
-    65 global attributes:
-        product_name: A2015201.L3m_DAY_SST4_sst4_9km.nc
-        instrument: MODIS
-        title: MODIS Level-3 Standard Mapped Image
-        project: Ocean Biology Processing Group (NASA/GSFC/OBPG)
-        platform: Aqua
-        temporal_range: day
-            .
-            .
-            .
-        cdm_data_type: grid
-        identifier_product_doi_authority: http://dx.doi.org
-        identifier_product_doi: 10.5067/AQUA/MODIS_OC.2014.0
-        keywords: Oceans > Ocean Temperature > Sea Surface Temperature
-        keywords_vocabulary: NASA Global Change Master Directory (GCMD) Science Keywords
+sp::spplot(log10(r))
 ```
