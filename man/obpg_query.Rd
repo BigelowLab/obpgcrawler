@@ -9,7 +9,7 @@ obpg_query(top = "http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
   year = format(as.POSIXct(Sys.Date()), "\%Y"),
   day = format(as.POSIXct(Sys.Date()), "\%j"), what = c("all",
   "most_recent", "within", "before", "after")[1], date_filter = NULL,
-  greplargs = NULL)
+  greplargs = NULL, verbose = FALSE)
 }
 \arguments{
 \item{top}{character, uri of the top catalog}
@@ -38,6 +38,8 @@ the value of date_filter}
 \item{greplargs}{list or NULL, if a list the provide two elements,
 pattern=character and fixed=logical, which are arguments for \code{grepl} If fixed is FALSE
 then be sure to provide a regex for the pattern value.}
+
+\item{verbose}{logical, for debugging}
 }
 \value{
 list of DatasetRefClass or NULL

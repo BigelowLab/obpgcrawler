@@ -102,6 +102,7 @@ parse_node <- function(node, url = NULL){
 #' @param greplargs list or NULL, if a list the provide two elements,
 #'    pattern=character and fixed=logical, which are arguments for \code{grepl} If fixed is FALSE
 #'    then be sure to provide a regex for the pattern value.
+#' @param verbose logical, for debugging
 #' @return list of DatasetRefClass or NULL
 #' @examples
 #'    \dontrun{
@@ -127,7 +128,8 @@ obpg_query <- function(
    day = format(as.POSIXct(Sys.Date()), "%j"),
    what = c("all", "most_recent", "within", "before", "after")[1],
    date_filter = NULL,
-   greplargs = NULL) {
+   greplargs = NULL, 
+   verbose = FALSE) {
    
    Top <- get_catalog(top[1])
    if (is.null(Top)) {
@@ -219,20 +221,20 @@ obpg_query <- function(
       Y <- Years[year]
       if (!is.null(Y)){
          for (y in Y){
-            y <- y$GET()
-            Days <- y$get_catalogs()
+            Days <- y$GET()$get_catalogs()
             D <- Days[day]
             if (!is.null(D)){
                for (d in D){
                   d <- d$GET()
-                  datasets <- d$get_datasets()
-                  if (!is.null(greplargs)){
-                     ix <- grepl(greplargs[['pattern']], names(datasets), fixed = greplargs[['fixed']])
-                     if (any(ix)) R[names(datasets[ix])] <- datasets[ix]
-                     
-                  } else {
-                     R[names(datasets)] <- datasets
-                  }  # greplargs?
+                  if (!is.null(d)){
+                     datasets <- d$get_datasets()
+                     if (!is.null(greplargs)){
+                        ix <- grepl(greplargs[['pattern']], names(datasets), fixed = greplargs[['fixed']])
+                        if (any(ix)) R[names(datasets[ix])] <- datasets[ix]
+                     } else {
+                        R[names(datasets)] <- datasets
+                     }  # greplargs?
+                  } # d is !null
                } # day loop
             } # day is found
         } # year loop 
