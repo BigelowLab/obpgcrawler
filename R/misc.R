@@ -86,9 +86,19 @@ parse_node <- function(node, url = NULL){
 #' @param top character, uri of the top catalog
 #' @param platform character, the name of the platform (MODISA, MODIST, OCTS, SeaWiFS, VIIRS, etc.)
 #' @param product character, the product type (L3SMI, etc.)
-#' @param year character or numeric, four digit year(s) - ignored if what = most_recent
-#' @param day character or numeric, three digit year of day(s) - ignored if what = most_recent
-#' @param what character, optional filters (defaults to "all" but "most_recent" works)
+#' @param year character or numeric, four digit year(s) - ignored if what is not 'all'
+#' @param day character or numeric, three digit year of day(s) - ignored if what is not 'all'
+#' @param what character, optional filters
+#'   \itemize{
+#'       \item{all - return all occurences, the default, used with year and day, date_filter = NULL}
+#'       \item{most_recent - return only the most recent, date_filter = NULL}
+#'       \item{within - return the occurrences bounded by date_filter first and secomd elements}
+#'       \item{before - return the occurences prior to the first date_filter element}
+#'       \item{after - return the occurrences after the first date_filter element}
+#'    }
+#' @param date_filter POSIXct one or two element vector populated according to
+#'    the \code{what} parameter.  By default NULL.  It is an error to not match 
+#'    the value of date_filter  
 #' @param greplargs list or NULL, if a list the provide two elements,
 #'    pattern=character and fixed=logical, which are arguments for \code{grepl} If fixed is FALSE
 #'    then be sure to provide a regex for the pattern value.
@@ -101,6 +111,13 @@ parse_node <- function(node, url = NULL){
 #'          product = 'L3SMI',
 #'          what = 'most_recent',
 #'          greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
+#'       query <- obpg_query( 
+#'          top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
+#'          platform = 'MODISA', 
+#'          product = 'L3SMI',
+#'          what = 'within',
+#'          date_filter = as.POSIXct(c("2008-01-01", "2008-06-01"), format = "%Y-%m-%d"),
+#'          greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
 #'    }
 obpg_query <- function(
    top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
@@ -108,7 +125,8 @@ obpg_query <- function(
    product = 'L3SMI',
    year = format(as.POSIXct(Sys.Date()), "%Y"),
    day = format(as.POSIXct(Sys.Date()), "%j"),
-   what = c("all", "most_recent")[1],
+   what = c("all", "most_recent", "within", "before", "after")[1],
+   date_filter = NULL,
    greplargs = NULL) {
    
    Top <- get_catalog(top[1])
@@ -158,6 +176,42 @@ obpg_query <- function(
             if (length(R) != 0){ break }
          } #years
       }
+   
+   } else if (what %in% c('within', "before", "after")){
+   
+      if (is.null(date_filter)){
+         cat("if what is 'within', 'before' or 'after' then date_filter must be provided\n")
+         return(NULL)
+      }
+      if ((what == 'within') && (length(date_filter) < 2) ) {
+         cat("if what is 'within' then date_filter have [begin,end] elements\n")
+         return(NULL)
+      }   
+      if (!inherits(date_filter, "POSIXct")){
+         cat("if what is 'within', 'before' or 'after' then date_filter must be POSIXct class\n")
+         return(NULL)
+      }          
+      
+      # compute the beginning and end
+      tbounds <-   switch(tolower(what),
+            'within' = date_filter[1:2],
+            'after' = c(date_filter[1], as.POSIXct(Sys.time())), # from then to present
+            'before' = c( as.POSIXct("1990-01-01 00:00:00"), date_filter[1]) ) # from 1990 to then
+      # convert to daily steps
+      tsteps <- seq(tbounds[1], tbounds[2], by = 'day')
+      year <- format(tsteps, "%Y")
+      day <- format(tsteps,"%j")
+      
+      yd <- split(day, year)
+      
+      for (i in seq_along(yd)){
+         y = names(yd)[i]
+         R[[y]] <- obpg_query(top = top, platform = platform, product = product,
+            year = y, day = yd[[y]], 
+            what = 'all', greplargs = greplargs)
+      }
+
+      R <- unlist(R)
    
    } else {
       #all for a given YEAR/DAY

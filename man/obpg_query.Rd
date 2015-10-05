@@ -8,7 +8,8 @@ obpg_query(top = "http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
   platform = "MODISA", product = "L3SMI",
   year = format(as.POSIXct(Sys.Date()), "\%Y"),
   day = format(as.POSIXct(Sys.Date()), "\%j"), what = c("all",
-  "most_recent")[1], greplargs = NULL)
+  "most_recent", "within", "before", "after")[1], date_filter = NULL,
+  greplargs = NULL)
 }
 \arguments{
 \item{top}{character, uri of the top catalog}
@@ -17,11 +18,22 @@ obpg_query(top = "http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
 
 \item{product}{character, the product type (L3SMI, etc.)}
 
-\item{year}{character or numeric, four digit year(s) - ignored if what = most_recent}
+\item{year}{character or numeric, four digit year(s) - ignored if what is not 'all'}
 
-\item{day}{character or numeric, three digit year of day(s) - ignored if what = most_recent}
+\item{day}{character or numeric, three digit year of day(s) - ignored if what is not 'all'}
 
-\item{what}{character, optional filters (defaults to "all" but "most_recent" works)}
+\item{what}{character, optional filters
+\itemize{
+    \item{all - return all occurences, the default, used with year and day, date_filter = NULL}
+    \item{most_recent - return only the most recent, date_filter = NULL}
+    \item{within - return the occurrences bounded by date_filter first and secomd elements}
+    \item{before - return the occurences prior to the first date_filter element}
+    \item{after - return the occurrences after the first date_filter element}
+ }}
+
+\item{date_filter}{POSIXct one or two element vector populated according to
+the \code{what} parameter.  By default NULL.  It is an error to not match
+the value of date_filter}
 
 \item{greplargs}{list or NULL, if a list the provide two elements,
 pattern=character and fixed=logical, which are arguments for \code{grepl} If fixed is FALSE
@@ -40,6 +52,13 @@ A basic query function to retrieve one or more datasets
          platform = 'MODISA',
          product = 'L3SMI',
          what = 'most_recent',
+         greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
+      query <- obpg_query(
+         top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
+         platform = 'MODISA',
+         product = 'L3SMI',
+         what = 'within',
+         date_filter = as.POSIXct(c("2008-01-01", "2008-06-01"), format = "\%Y-\%m-\%d"),
          greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
    }
 }

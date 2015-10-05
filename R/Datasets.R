@@ -38,7 +38,7 @@ DatasetsRefClass <- setRefClass("DatasetsRefClass",
          if (is_xmlNode(.self$node) && (class(.self) == "DatasetsRefClass")){
             x <- .self$node['catalogRef']
             nm <- if (length(x) > 0) 
-               sapply(x, function(x) xmlAttrs(x)[['name']]) else
+               sapply(x, function(x) XML::xmlAttrs(x)[['name']]) else
                "NA"
             cat(prefix, "  datasets: ", paste(nm, collapse = " "), "\n", sep = "")
          }

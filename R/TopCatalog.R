@@ -24,12 +24,12 @@ TopCatalogRefClass <- setRefClass("TopCatalogRef",
             if ("dataset" %in% names(XML::xmlChildren(.self$node))){
                if ("catalogRef" %in% names(XML::xmlChildren(.self$node[['dataset']]))){
                   x <- sapply(XML::xmlChildren(.self$node[['dataset']]),
-                     function(x) xmlAttrs(x)[['name']])
+                     function(x) XML::xmlAttrs(x)[['name']])
                   cat(prefix, "  catalogs: ", paste(x, collapse = " "), "\n", sep = "")
                } #has catalogRef
                if ("dataset" %in% names(XML::xmlChildren(.self$node[['dataset']]))){
                   x <- sapply(XML::xmlChildren(.self$node[['dataset']]),
-                     function(x) xmlAttrs(x)[['name']])
+                     function(x) XML::xmlAttrs(x)[['name']])
                   cat(prefix, "  datasets: ", paste(x, collapse = " "), "\n", sep = "")
                } #has catalogRef
             } #has dataset

@@ -21,7 +21,7 @@ ThreddsNodeRefClass <- setRefClass("ThreddsNodeRefClass",
             } else if (is.character(x)) {
                r <- httr::GET(x)
                if (reponse(r) == 200){
-                  .self$node <- xmlRoot(content(x))
+                  .self$node <- XML::xmlRoot(content(x))
                   .self$url <- x
                }
                
