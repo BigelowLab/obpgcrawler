@@ -102,7 +102,6 @@ parse_node <- function(node, url = NULL){
 #' @param greplargs list or NULL, if a list the provide two elements,
 #'    pattern=character and fixed=logical, which are arguments for \code{grepl} If fixed is FALSE
 #'    then be sure to provide a regex for the pattern value.
-#' @param verbose logical, for debugging
 #' @return list of DatasetRefClass or NULL
 #' @examples
 #'    \dontrun{
@@ -128,8 +127,7 @@ obpg_query <- function(
    day = format(as.POSIXct(Sys.Date()), "%j"),
    what = c("all", "most_recent", "within", "before", "after")[1],
    date_filter = NULL,
-   greplargs = NULL, 
-   verbose = FALSE) {
+   greplargs = NULL) {
    
    Top <- get_catalog(top[1])
    if (is.null(Top)) {
