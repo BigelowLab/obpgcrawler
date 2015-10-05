@@ -58,8 +58,9 @@ parse_node <- function(node, url = NULL){
          if (is.null(url)) url <- node$url
          node <- XML::xmlRoot(httr::content(node))
       } else {
-         cat("response status != 200\n")
-         print(node)
+         cat("response status ==",httr::status_code(node), "\n")
+         cat("response url = ", node$url, "\n")
+         print(httr::content(node))
          return(NULL)
       }
    }
