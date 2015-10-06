@@ -20,8 +20,8 @@ DatasetsRefClass <- setRefClass("DatasetsRefClass",
       name = 'character',
       ID = 'character'),
    methods = list(
-      initialize = function(x){
-         callSuper(x)
+      initialize = function(x, ...){
+         callSuper(x, ...)
          if (is_xmlNode(.self$node)){
             atts <- XML::xmlAttrs(.self$node)
             natts <- names(atts)

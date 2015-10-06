@@ -18,8 +18,8 @@ ServiceRefClass <- setRefClass("ServiceRefClass",
       serviceType = 'character',
       base = 'character'),
    methods = list(
-      initialize = function(x){
-         callSuper(x)
+      initialize = function(x, ...){
+         callSuper(x, ...)
          if (is_xmlNode(.self$node)){
             atts <- XML::xmlAttrs(x)
             natts <- names(atts)

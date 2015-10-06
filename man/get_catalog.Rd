@@ -4,13 +4,15 @@
 \alias{get_catalog}
 \title{Retrieve a catalog}
 \usage{
-get_catalog(uri)
+get_catalog(uri, ...)
 }
 \arguments{
 \item{uri}{the URI of the catalog}
+
+\item{...}{further arguments for parse_node}
 }
 \value{
-ThreddsNodeRefClass or sublass or NULL
+ThreddsNodeRefClass or subclass or NULL
 }
 \description{
 Retrieve a catalog

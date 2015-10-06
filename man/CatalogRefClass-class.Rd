@@ -24,7 +24,7 @@ An catalogRef representation that subclasses from ThreddsNodeRefClass
 \section{Methods}{
 
 \describe{
-\item{\code{initialize(x)}}{x may be url or XML::xmlNode}
+\item{\code{initialize(x, verbose = FALSE, n_tries = 3)}}{x may be url or XML::xmlNode}
 
 \item{\code{show(prefix = "")}}{show the content of the class}
 }}

@@ -28,8 +28,8 @@ DatasetRefClass <- setRefClass("DatasetRefClass",
       ),
       
    methods = list(
-      initialize = function(x){
-         callSuper(x)
+      initialize = function(x, ...){
+         callSuper(x, ...)
          if (!is_xmlNode(.self$node)){
             .self$dataSize <- as.numeric(NA)
             .self$date <- as.character(NA)

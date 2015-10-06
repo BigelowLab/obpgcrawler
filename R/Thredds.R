@@ -9,20 +9,28 @@
 ThreddsNodeRefClass <- setRefClass("ThreddsNodeRefClass",
    fields = list(
       url = 'character',
-      node = "ANY"),
+      node = "ANY",
+      handle = "ANY",
+      verbose_mode = "logical",
+      tries = 'numeric'),
    methods = list(
       
-      initialize = function(x){
+      initialize = function(x, verbose = FALSE, n_tries = 3){
          "x may be url or XML::xmlNode"
          if (!missing(x)){
             if (is_xmlNode(x)) {
                .self$node <- x
                .self$url <- 'none'
+               .self$verbose_mode <- verbose
+               .self$tries <- n_tries
             } else if (is.character(x)) {
+               .self$handle <- httr::handle(x)
                r <- httr::GET(x)
                if (reponse(r) == 200){
                   .self$node <- XML::xmlRoot(content(x))
                   .self$url <- x
+                  .self$verbose_mode <- verbose
+                  .self$tries <- n_tries
                }
                
             }
@@ -32,6 +40,7 @@ ThreddsNodeRefClass <- setRefClass("ThreddsNodeRefClass",
       show = function(prefix = ""){
          "show the content of the class"
          cat(prefix, "Reference Class: ", methods::classLabel(class(.self)), "\n", sep = "")
+         cat(prefix, "  verbose_mode: ", .self$verbose_mode, "\n", sep = "")
          cat(prefix, "  url: ", .self$url, "\n", sep = "")
          if (is_xmlNode(.self$node)) {
             cat(prefix, "  children: ", paste(.self$unames(), collapse = " "), "\n", sep = "")
@@ -60,12 +69,23 @@ ThreddsNodeRefClass$methods(
 NULL
 ThreddsNodeRefClass$methods( 
    GET = function(){
-      r <- try(httr::GET(.self$url))
-      if (inherits(r, "try-error")){
-         return(NULL)
-      } else {
-         return(parse_node(r))
+      if (.self$verbose_mode) cat("GET", .self$url, "\n")
+      i <- 1
+      r <- NULL
+      while(i <= .self$tries){
+         #r <- try(httr::GET(.self$url, handle = httr::handle(.self$url)))
+         r <- try(httr::GET(.self$url))
+         if (inherits(r, "try-error")){
+            if (.self$verbose_mode) cat(sprintf("*** GET failed after try: %i \n", i))    
+            r <- NULL
+            i <- i + 1
+         } else {
+            r <- parse_node(r, verbose = .self$verbose_mode)
+            break
+         }
       }
+      if (is.null(r) && .self$verbose_mode) cat(sprintf("*** GET failed after %i tries ***\n", i))
+      return(r)
    })
    
 #' Retrieve a vector of unique child names

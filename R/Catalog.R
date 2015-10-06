@@ -30,8 +30,8 @@ CatalogRefClass <- setRefClass("CatalogRefClass",
       type = 'character',
       ID = 'character'),
    methods = list(
-      initialize = function(x){
-         callSuper(x)
+      initialize = function(x, ...){
+         callSuper(x, ...)
          if (is_xmlNode(x)){
             atts <- XML::xmlAttrs(.self$node)
             natts <- names(atts)

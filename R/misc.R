@@ -22,12 +22,13 @@ xmlString <- function(x){
 #'
 #' @export
 #' @param uri the URI of the catalog
-#' @return ThreddsNodeRefClass or sublass or NULL
-get_catalog <- function(uri){
+#' @param ... further arguments for parse_node
+#' @return ThreddsNodeRefClass or subclass or NULL
+get_catalog <- function(uri, ...){
    
    x <- httr::GET(uri)
    if (httr::status_code(x) == 200){
-      node <- parse_node(x)
+      node <- parse_node(x, ...)
    } else {
       node <- NULL
    }
@@ -39,16 +40,17 @@ get_catalog <- function(uri){
 #' @export
 #' @param node XML::xmlNode or an httr::response object
 #' @param url character, optional url if a catalog or direct dataset
+#' @param verbose logical, by default FALSE
 #' @return ThreddsNodeRefClass object or subclass
-parse_node <- function(node, url = NULL){
+parse_node <- function(node, url = NULL, verbose = FALSE){
 
    # given an 'dataset' XML::xmlNode determine if the node is a collection or
    # direct (to data) and return the appropriate data type
-   parse_dataset <- function(x){
+   parse_dataset <- function(x, verbose = FALSE){
       if ('access' %in% names(XML::xmlChildren(x))){
-         r <- DatasetRefClass$new(x)
+         r <- DatasetRefClass$new(x, verbose = verbose)
       } else {
-         r <- DatasetsRefClass$new(x)
+         r <- DatasetsRefClass$new(x, verbose = verbose)
       }
       return(r)
    }
@@ -69,11 +71,11 @@ parse_node <- function(node, url = NULL){
    
    nm <- XML::xmlName(node)[1]
    n <- switch(nm,
-       'catalog' = TopCatalogRefClass$new(node),
-       'catalogRef' = CatalogRefClass$new(node),
-       'service' = ServiceRefClassr$new(node),
-       'dataset' = parse_dataset(node),
-       ThreddsRefClass$new(node))
+       'catalog' = TopCatalogRefClass$new(node, verbose = verbose),
+       'catalogRef' = CatalogRefClass$new(node, verbose = verbose),
+       'service' = ServiceRefClassr$new(node, verbose = verbose),
+       'dataset' = parse_dataset(node, verbose = verbose),
+       ThreddsRefClass$new(node, verbose = verbose))
 
    if (!is.null(url)) n$url <- url
 
@@ -103,6 +105,7 @@ parse_node <- function(node, url = NULL){
 #' @param greplargs list or NULL, if a list the provide two elements,
 #'    pattern=character and fixed=logical, which are arguments for \code{grepl} If fixed is FALSE
 #'    then be sure to provide a regex for the pattern value.
+#' @param verbose logical, by default FALSE
 #' @return list of DatasetRefClass or NULL
 #' @examples
 #'    \dontrun{
@@ -128,9 +131,11 @@ obpg_query <- function(
    day = format(as.POSIXct(Sys.Date()), "%j"),
    what = c("all", "most_recent", "within", "before", "after")[1],
    date_filter = NULL,
-   greplargs = NULL) {
+   greplargs = NULL,
+   verbose = FALSE) {
    
-   Top <- get_catalog(top[1])
+   
+   Top <- get_catalog(top[1], verbose = verbose)
    if (is.null(Top)) {
       cat("error getting catalog for", top[1], "\n")
       return(NULL)
@@ -242,6 +247,9 @@ obpg_query <- function(
    
    # if none found then we return NULL (not an empty list)
    if (length(R) == 0) R <- NULL
+   if (verbose){
+      cat(sprintf("obpg_query: retrieved %i records\n", length(R)))
+   }
    invisible(R)   
 }
 

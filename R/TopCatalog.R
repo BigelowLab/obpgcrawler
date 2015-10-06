@@ -53,11 +53,11 @@ TopCatalogRefClass$methods(
       if ("dataset" %in% names(XML::xmlChildren(.self$node))){
          if ("catalogRef" %in% names(XML::xmlChildren(.self$node[['dataset']]))){
             x <- lapply(XML::xmlChildren(.self$node[['dataset']]),
-               function(x, uri = NULL) {
-                  n <- parse_node(x)
+               function(x, uri = NULL, verbose = FALSE) {
+                  n <- parse_node(x, verbose = verbose)
                   n$url <- gsub("catalog.xml", n$href, uri)
                   return(n)
-               }, uri = .self$url )
+               }, uri = .self$url, verbose = .self$verbose_mode )
             names(x) <- sapply(x, "[[", "name")
          } else {
             x <- NULL
@@ -81,11 +81,11 @@ TopCatalogRefClass$methods(
       if ("dataset" %in% names(XML::xmlChildren(.self$node))){
          if ("dataset" %in% names(XML::xmlChildren(.self$node[['dataset']]))){
             x <- lapply(XML::xmlChildren(.self$node[['dataset']]),
-               function(x, uri = NULL) {
+               function(x, uri = NULL, verbose = FALSE) {
                   n <- parse_node(x)
                   n$url <- gsub("catalog.xml", n$name, uri)
                   return(n)
-               }, uri = .self$url )
+               }, uri = .self$url, verbose = .self$verbose_mode )
             names(x) <- sapply(x, "[[", "name")
          } else {
             x <- NULL

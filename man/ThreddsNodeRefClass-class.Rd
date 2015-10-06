@@ -18,7 +18,7 @@ An base representation that  other nodes subclass from
 \section{Methods}{
 
 \describe{
-\item{\code{initialize(x)}}{x may be url or XML::xmlNode}
+\item{\code{initialize(x, verbose = FALSE, n_tries = 3)}}{x may be url or XML::xmlNode}
 }}
 \seealso{
 Other Thredds: \code{\link{DatasetRefClass}},

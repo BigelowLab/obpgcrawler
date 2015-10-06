@@ -4,12 +4,14 @@
 \alias{parse_node}
 \title{Convert a node to an object inheriting from ThreddsNodeRefClass}
 \usage{
-parse_node(node, url = NULL)
+parse_node(node, url = NULL, verbose = FALSE)
 }
 \arguments{
 \item{node}{XML::xmlNode or an httr::response object}
 
 \item{url}{character, optional url if a catalog or direct dataset}
+
+\item{verbose}{logical, by default FALSE}
 }
 \value{
 ThreddsNodeRefClass object or subclass
