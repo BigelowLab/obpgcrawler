@@ -6,10 +6,10 @@
 \usage{
 obpg_query(top = "http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
   platform = "MODISA", product = "L3SMI",
-  year = format(as.POSIXct(Sys.Date()), "\%Y"),
-  day = format(as.POSIXct(Sys.Date()), "\%j"), what = c("all",
-  "most_recent", "within", "before", "after")[1], date_filter = NULL,
-  greplargs = NULL, verbose = FALSE)
+  year = format(as.Date(Sys.Date()), "\%Y"),
+  day = format(as.Date(Sys.Date()), "\%j"), what = c("all", "most_recent",
+  "within", "before", "after")[1], date_filter = NULL, greplargs = NULL,
+  verbose = FALSE)
 }
 \arguments{
 \item{top}{character, uri of the top catalog}
@@ -32,7 +32,7 @@ You can improve efficiency by preselecting days for months, days, or seasons.}
     \item{after - return the occurrences after the first date_filter element}
  }}
 
-\item{date_filter}{POSIXct one or two element vector populated according to
+\item{date_filter}{POSIXct or Date, one or two element vector populated according to
 the \code{what} parameter.  By default NULL.  It is an error to not match
 the value of date_filter}
 
