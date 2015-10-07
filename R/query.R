@@ -15,7 +15,7 @@
 #'       \item{before - return the occurences prior to the first date_filter element}
 #'       \item{after - return the occurrences after the first date_filter element}
 #'    }
-#' @param date_filter POSIXct one or two element vector populated according to
+#' @param date_filter POSIXct or Date, one or two element vector populated according to
 #'    the \code{what} parameter.  By default NULL.  It is an error to not match 
 #'    the value of date_filter  
 #' @param greplargs list or NULL, if a list the provide two elements,
@@ -46,8 +46,8 @@ obpg_query <- function(
    top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
    platform = 'MODISA', 
    product = 'L3SMI',
-   year = format(as.POSIXct(Sys.Date()), "%Y"),
-   day = format(as.POSIXct(Sys.Date()), "%j"),
+   year = format(as.Date(Sys.Date()), "%Y"),
+   day = format(as.Date(Sys.Date()), "%j"),
    what = c("all", "most_recent", "within", "before", "after")[1],
    date_filter = NULL,
    greplargs = NULL,
@@ -150,8 +150,8 @@ obpg_query <- function(
          cat("if what is 'within' then date_filter have [begin,end] elements\n")
          return(NULL)
       }   
-      if (!inherits(date_filter, "POSIXct")){
-         cat("if what is 'within', 'before' or 'after' then date_filter must be POSIXct class\n")
+      if (!inherits(date_filter, "POSIXt") || !inherits(date_filter, "Date")){
+         cat("if what is 'within', 'before' or 'after' then date_filter must be POSIXt or Date class\n")
          return(NULL)
       }          
       
