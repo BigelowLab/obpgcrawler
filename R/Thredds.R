@@ -76,15 +76,22 @@ ThreddsNodeRefClass$methods(
          #r <- try(httr::GET(.self$url, handle = httr::handle(.self$url)))
          r <- try(httr::GET(.self$url))
          if (inherits(r, "try-error")){
-            if (.self$verbose_mode) cat(sprintf("*** GET failed after try: %i \n", i))    
+            if (.self$verbose_mode) {
+               cat(sprintf("*** GET failed after attempt %i\n", i))   
+               if (i < .self$tries) {
+                  cat("  will try again\n")
+               } else { 
+                  cat("  exhausted permitted tries, returning NULL\n")
+               }
+            } 
             r <- NULL
             i <- i + 1
          } else {
+            if (i > 1) cat(sprintf("  whew!  attempt %i successful\n", i))
             r <- parse_node(r, verbose = .self$verbose_mode)
             break
          }
       }
-      if (is.null(r) && .self$verbose_mode) cat(sprintf("*** GET failed after %i tries ***\n", i))
       return(r)
    })
    

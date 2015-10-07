@@ -19,4 +19,6 @@ Collate:
     'Dataset.R'
     'Service.R'
     'TopCatalog.R'
+    'days.R'
     'misc.R'
+    'query.R'
