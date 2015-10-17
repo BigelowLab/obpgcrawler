@@ -21,4 +21,5 @@ Collate:
     'TopCatalog.R'
     'days.R'
     'misc.R'
+    'ngm.R'
     'query.R'

@@ -150,7 +150,7 @@ obpg_query <- function(
          cat("if what is 'within' then date_filter have [begin,end] elements\n")
          return(NULL)
       }   
-      if (!inherits(date_filter, "POSIXt") || !inherits(date_filter, "Date")){
+      if (!inherits(date_filter, "POSIXt") && !inherits(date_filter, "Date")){
          cat("if what is 'within', 'before' or 'after' then date_filter must be POSIXt or Date class\n")
          return(NULL)
       }          
