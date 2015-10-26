@@ -53,20 +53,6 @@ obpg_query <- function(
    greplargs = NULL,
    verbose = FALSE) {
    
-   # Determine if a vector of names match the greplargs 
-   # @param x a vector of names
-   # @param greplargs NULL, vector or list
-   # @return logical vector
-   grepl_it <- function(x, greplargs = NULL){
-      ix <- rep(FALSE, length(x))
-      if (is.null(greplargs)) return(!ix)
-      if (!is.list(greplargs[[1]])) greplargs <- list(greplargs)
-      
-      for (g in greplargs){
-            ix <- ix | grepl(g[['pattern']], x, fixed = g[['fixed']])
-      }
-      ix
-   }
    
    # Used to scan 'all' days for the listed year
    # Product CatalogRefClass
@@ -97,7 +83,7 @@ obpg_query <- function(
       return(R)
    }
    
-   Top <- get_catalog(top[1], verbose = verbose)
+   Top <- threddscrawler::get_catalog(top[1], verbose = verbose)
    if (is.null(Top)) {
       cat("error getting catalog for", top[1], "\n")
       return(NULL)
@@ -129,7 +115,7 @@ obpg_query <- function(
             for (d in rev(names(Days))){
                D <- Days[[d]]$GET()
                datasets <- D$get_datasets()
-               ix <- grepl_it(names(datasets), greplargs)
+               ix <- threddscrawler::grepl_it(names(datasets), greplargs)
                if (any(ix)){
                   R <- datasets[ix]
                   break

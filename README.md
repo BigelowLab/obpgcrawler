@@ -12,9 +12,7 @@ The above examples use the simple function, `obpg_query()`.  At the very end of 
 
 [R >= 3.0](http://cran.r-project.org)
 
-[httr](http://cran.r-project.org/web/packages/httr/index.html)
-
-[XML](http://cran.r-project.org/web/packages/XML/index.html)
+[threddscrawler](https://github.com/btupper/threddscrawler)
 
 #### Installation
 
