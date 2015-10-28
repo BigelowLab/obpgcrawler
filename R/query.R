@@ -52,37 +52,39 @@ obpg_query <- function(
    date_filter = NULL,
    greplargs = NULL,
    verbose = FALSE) {
-   
-   
+      
    # Used to scan 'all' days for the listed year
    # Product CatalogRefClass
    # year one or more character in YYYY format
    # day one or more charcater in format JJJ
    # greplargs list of one or more grepl args
-   get_all <- function(Product, year, day, greplargs = NULL) {
+   get_all_obpg <- function(Product, year, day, greplargs = NULL, verbose = FALSE) {
       #all for a given YEAR/DAY
       R <- NULL
       Years <- Product$get_catalogs()
       Y <- Years[year]
+      Y <- Y[!sapply(Y, is.null)]
       if (!is.null(Y)){
          for (y in Y){
             Days <- y$GET()$get_catalogs()
             D <- Days[day]
+            D <- D[!sapply(D, is.null)]
             if (!is.null(D)){
                for (d in D){
-                  d <- d$GET()
-                  if (!is.null(d)){
-                     datasets <- d$get_datasets()
-                     ix <- grepl_it(names(datasets), greplargs)
-                     if (any(ix)) R[names(datasets)[ix]] <- datasets[ix]
-                  } # d is !null
-               } # day loop
+                  dtop <- d$GET()
+                  if (!is.null(dtop)){
+                     datasets <- dtop$get_datasets()
+                     if (!is.null(datasets)){
+                        ix <- threddscrawler::grepl_it(names(datasets), greplargs)
+                        if (any(ix)) R[names(datasets)[ix]] <- datasets[ix]
+                     } # datasets?
+                  } # dtop is !null
+               } # D loop
             } # day is found
-        } # year loop 
+        } # Y loop 
       } #year is found   
       return(R)
-   }
-   
+   }   
    Top <- threddscrawler::get_catalog(top[1], verbose = verbose)
    if (is.null(Top)) {
       cat("error getting catalog for", top[1], "\n")
@@ -156,7 +158,7 @@ obpg_query <- function(
       # the years (days may be different for each year
       for (i in seq_along(yd)){
          y <- names(yd)[i]
-         R[[y]] <- get_all(Product, y, day, greplargs = greplargs)
+         R[[y]] <- get_all_obpg(Product, y, yd[[i]], greplargs = greplargs, verbose = verbose)
       }
 
       R <- unlist(R, use.names = FALSE)
@@ -164,7 +166,7 @@ obpg_query <- function(
    
    } else {
       # retrieve the days from the years specified
-      R <- get_all(Product, year, day, greplargs = greplargs)
+      R <- get_all_obpg(Product, year, day, greplargs = greplargs)
    }
    
    # if none found then we return NULL (not an empty list)
