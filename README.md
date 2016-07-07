@@ -1,6 +1,10 @@
 #### OBPG Crawler
 
-[Ocean Biology Processing Group](http://oceancolor.gsfc.nasa.gov/cms/homepage) provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](http://oceancolor.gsfc.nasa.gov/cms/homepage).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
+Searching [Ocean Biology Processing Group](http://oceancolor.gsfc.nasa.gov/cms/homepage) offerings using either THREDDS or direct data access queries. 
+
+##### THREDDS Queries
+
+OBPG provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](http://oceancolor.gsfc.nasa.gov/cms/homepage).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
 
 + Retrieve the most recent 8DAY 4km CHLA from MODISA (example below)
 + Retrieve MODISA Chlorophyll 8DAY 4km L3SMI's from days 1-30 in 2014 and 2015 (example below)
@@ -8,11 +12,16 @@
 
 The above examples use the simple function, `obpg_query()`.  At the very end of this document is a description of detailed step-by-step process hidden in `obpg_query()`.
 
+##### Direct Data Access Queries
+
+In addition to THREDDS crawling, you can also search and download from [OBPG's OceanData](http://oceandata.sci.gsfc.nasa.gov/).  Direct data queries don't provide the same level of sophistication as THREDDS queries, but they can be useful 
+
 #### Requirements
 
 [R >= 3.0](http://cran.r-project.org)
 
 [threddscrawler](https://github.com/btupper/threddscrawler)
+[rvest](https://cran.r-project.org/web/packages/rvest/index.html)
 
 #### Installation
 
@@ -23,7 +32,24 @@ library(devtools)
 install_github("btupper/obpgcrawler")
 ```
 
-#### Classes
+#### Direct Data Access
+
+Direct data access is organized by mission, processing level, year and parameter.  Some missions offered even more refined options like frequency and resolution.  Queries return a data.frame of the files available.
+
+```R
+x <- query_direct(mission = 'MODIS-Aqua', level = 'Mapped', freq = 'Daily', param = 'chlor_a', year = 2016)
+head(x)
+#                              Filename       Last Modified    Size
+# 1 A2016001.L3m_DAY_CHL_chlor_a_4km.nc 2016-01-17 19:03:00 7135019
+# 2 A2016002.L3m_DAY_CHL_chlor_a_4km.nc 2016-01-18 19:34:00 6915524
+# 3 A2016003.L3m_DAY_CHL_chlor_a_4km.nc 2016-01-19 19:32:00 7541482
+# 4 A2016004.L3m_DAY_CHL_chlor_a_4km.nc 2016-01-20 19:25:00 7575430
+# 5 A2016005.L3m_DAY_CHL_chlor_a_4km.nc 2016-01-21 19:52:00 7435993
+# 6 A2016006.L3m_DAY_CHL_chlor_a_4km.nc 2016-01-22 19:51:00 7436909
+```
+
+
+#### THREDDS Classes
 
 Most users will only use the `obpg_query()` and `get_*days()` functions, but in case you are interested here is a brief description of the various classes (all Reference Classes) used.
 
@@ -33,7 +59,8 @@ Most users will only use the `obpg_query()` and `get_*days()` functions, but in 
  
 OBPG's `dataset` comes in two flavors: collections of datasets and direct datasets.  I split these into  `DatasetsRefClass` (collections) and `DatasetRefClass` (direct); the latter has an 'access' child node the former does not.  A collection is a listing of one or more datasets (either direct or catalogs).  A direct dataset is a pointer to an actual OpeNDAP resource (exposed as NetCDF object, the very thing we seek!)
 
-#### Data Organization
+
+#### THREDDS Data Organization
 
 OBPG data is organized by PLATFORM > PRODUCT > YEAR > DAY.  Data files are stored at the day level.
 
