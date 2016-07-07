@@ -3,12 +3,12 @@ Title: A limited THREDDS crawler for programmatically working with the OpeNDAP
     data offerings from http://oceandata.sci.gsfc.nasa.gov/opendap/
 Version: 0.1
 Depends:
-    R (>= 3.0),
-    magrittr
+    R (>= 3.0)
 Imports:
     methods,
     threddscrawler,
-    rvest
+    rvest,
+    magrittr
 Maintainer: Ben Tupper <btupper@bigelow.org>
 Author: Ben Tupper <btupper@bigelow.org>
 URL: https://github.com/btupper/obpgcrawler

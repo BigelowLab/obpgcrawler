@@ -8,6 +8,7 @@
 #' @name obpgcrawler
 #' @docType package
 #' @import methods threddscrawler
+#' @importFrom magrittr %>%
 #' @examples
 #' \dontrun{ Top <- threddscrawler::get_catalog(platform = 'MODISA', verbose = TRUE) }
 NULL
