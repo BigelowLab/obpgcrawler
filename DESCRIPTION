@@ -3,7 +3,8 @@ Title: A limited THREDDS crawler for programmatically working with the OpeNDAP
     data offerings from http://oceandata.sci.gsfc.nasa.gov/opendap/
 Version: 0.1
 Depends:
-    R (>= 3.0)
+    R (>= 3.0),
+    magrittr
 Imports:
     methods,
     threddscrawler,

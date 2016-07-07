@@ -78,7 +78,7 @@ query_direct <- function(base_uri = 'http://oceandata.sci.gsfc.nasa.gov',
 
     r <- httr::GET(uri)
     if (httr::status_code(r) == 200){
-        x <- list_uri %>%
+        x <- uri %>%
             xml2::read_html(httr::content(r, type = 'text/html', as = 'text', encoding = 'UTF-8')) %>%
             rvest::html_nodes(xpath='//*[@id="content"]/table') %>%
             rvest::html_table()
