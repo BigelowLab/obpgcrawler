@@ -4,7 +4,7 @@ Searching [Ocean Biology Processing Group](http://oceancolor.gsfc.nasa.gov/cms/h
 
 ##### THREDDS Queries
 
-OBPG provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](http://oceancolor.gsfc.nasa.gov/cms/homepage).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
+OBPG provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](https://oceancolor.gsfc.nasa.gov/).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
 
 + Retrieve the most recent 8DAY 4km CHLA from MODISA (example below)
 + Retrieve MODISA Chlorophyll 8DAY 4km L3SMI's from days 1-30 in 2014 and 2015 (example below)
@@ -20,7 +20,8 @@ In addition to THREDDS crawling, you can also search and download from [OBPG's O
 
 [R >= 3.0](http://cran.r-project.org)
 
-[threddscrawler](https://github.com/btupper/threddscrawler)
+[threddscrawler](https://github.com/BigelowLab/threddscrawler)
+
 [rvest](https://cran.r-project.org/web/packages/rvest/index.html)
 
 #### Installation
@@ -29,7 +30,11 @@ It is easy to install with [devtools](https://cran.r-project.org/web/packages/de
 
 ```R
 library(devtools)
-install_github("btupper/obpgcrawler")
+
+# if you don't have threddscrawler installed
+install_github("BigelowLab/obpgcrawler")
+
+install_github("BigelowLab/obpgcrawler")
 ```
 
 #### Direct Data Access
@@ -80,7 +85,7 @@ These two examples show how to use the `obpg_query()` function to simply collect
 
 ```R
 library(obpgcrawler)
-query <- obpg_query(top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
+query <- obpg_query(top = 'https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
    platform = 'MODISA', 
    product = 'L3SMI',
    what = 'most_recent',

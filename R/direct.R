@@ -1,5 +1,6 @@
 #' Download a direct data access file using \code{\link{download.file}}
 #'
+#' @export
 #' @param filename the name of the file to download - required as 'A2016186.L3m_DAY_CHL_chlor_a_4km.nc'
 #' @param output_filename character the name of the output file, the default is the same as \code{filename}
 #' @param output_path the file path to save to, the default is to save to the current path "."
