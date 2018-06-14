@@ -32,7 +32,7 @@ It is easy to install with [devtools](https://cran.r-project.org/web/packages/de
 library(devtools)
 
 # if you don't have threddscrawler installed
-install_github("BigelowLab/obpgcrawler")
+install_github("BigelowLab/threddscrawler")
 
 install_github("BigelowLab/obpgcrawler")
 ```
