@@ -1,6 +1,6 @@
 #### OBPG Crawler
 
-[Ocean Biology Processing Group](http://oceancolor.gsfc.nasa.gov/cms/homepage) provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](http://oceancolor.gsfc.nasa.gov/cms/homepage).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
+[Ocean Biology Processing Group](https://oceancolor.gsfc.nasa.gov/cms/homepage) provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](https://oceancolor.gsfc.nasa.gov/cms/homepage).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
 
 + Retrieve the most recent 8DAY 4km CHLA from MODISA (example below)
 + Retrieve MODISA Chlorophyll 8DAY 4km L3SMI's from days 1-30 in 2014 and 2015 (example below)
@@ -10,7 +10,7 @@ The above examples use the simple function, `obpg_query()`.  At the very end of 
 
 #### Requirements
 
-[R >= 3.0](http://cran.r-project.org)
+[R >= 3.0](https://cran.r-project.org)
 
 [threddscrawler](https://github.com/btupper/threddscrawler)
 
@@ -53,7 +53,7 @@ These two examples show how to use the `obpg_query()` function to simply collect
 
 ```R
 library(obpgcrawler)
-query <- obpg_query(top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
+query <- obpg_query(top = 'https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
    platform = 'MODISA', 
    product = 'L3SMI',
    what = 'most_recent',
@@ -61,7 +61,7 @@ query <- obpg_query(top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xm
 query
 $A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
 Reference Class: "DatasetRefClass"
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/193/A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/193/A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
   children: dataSize date access
   dataSize:26844930
   date:2015-08-05T11:05:15
@@ -79,7 +79,7 @@ query <- obpg_query(year = c('2014', '2015'),day = 1:30,
 query
 $A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
 Reference Class: "DatasetRefClass"
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2014/001/A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2014/001/A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
   children: dataSize date access
   dataSize:30411689
   date:2015-06-26T02:52:51
@@ -90,7 +90,7 @@ Reference Class: "DatasetRefClass"
 
 $A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
 Reference Class: "DatasetRefClass"
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/025/A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/025/A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
   children: dataSize date access
   dataSize:31609299
   date:2015-06-26T02:52:55
@@ -103,7 +103,7 @@ Reference Class: "DatasetRefClass"
 OBPG organizes data by platform/product/year/day - you can improve access times by precomputing the days to search.  In addition, you can specify more than one search pattern in one search.  For example, to get the monthly SST and CHL for 2008 and 2009 we supply two search patterns as well as explicitly provide the days to search.
 
 ```R
-top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml'
+top = 'https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml'
 platform = 'MODISA'
 product = 'L3SMI'
 greplargs = list(
@@ -175,71 +175,73 @@ sp::spplot(log10(r))
 Here is a worked example showingf each step; these steps are hidden when you use `obpg_query()`.  Let's follow this line of this question "What is in the most recent offering from platform = MODISA product = L3SMI and year = 2015?"
 
 First we get the top level catalog for the OpeNDAP offerings. 
-[web](http://oceandata.sci.gsfc.nasa.gov/opendap/) 
-[catalog.xml](http://oceandata.sci.gsfc.nasa.gov/opendap/hyrax/catalog.xml)
+[web](https://oceandata.sci.gsfc.nasa.gov/opendap/) 
+[catalog.xml](https://oceandata.sci.gsfc.nasa.gov/opendap/hyrax/catalog.xml)
 
 ```R
-uri <- oceancolor_catalog <- 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml'
-Top <- get_catalog(oceancolor_catalog)
+library(threddscrawler)
+library(obpgcrawler)
+uri <- 'https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml'
+Top <- threddscrawler::get_catalog(uri)
 Top
 Reference Class: "TopCatalogRef"
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml
   children: service dataset
   catalogs: MODISA MODIST OCTS SeaWiFS VIIRS
 ```
 
 Next we select the MODISA catalog. 
-[web](http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/contents.html) 
-[catalog.xml](http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/catalog.xml)
+[web](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/contents.html) 
+[catalog.xml](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/catalog.xml)
 
 ```R
 catalogs <- Top$get_catalogs()
 MODISA <- catalogs[['MODISA']]$GET()
 MODISA
 Reference Class: "TopCatalogRef"
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/catalog.xml
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/catalog.xml
   children: service dataset
   catalogs: L3SMI
 ```
 
 Next we select the L3SMI catalog. (yes, it is the only subcatalog) 
-[web](http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/contents.html) 
-[catalog.xml](http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/catalog.xml)
+[web](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/contents.html) 
+[catalog.xml](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/catalog.xml)
 
 ```R
 catalogs <- MODISA$get_catalogs()
 L3SMI <- catalogs[['L3SMI']]$GET()
 L3SMI
 Reference Class: "TopCatalogRef"
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/catalog.xml
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/catalog.xml
   children: service dataset
   catalogs: 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015
 ```
 
 Next we select the 2015 catalog. 
-[web](http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/contents.html) 
-[catalog.xml](http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/catalog.xml)
+[web](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/contents.html) 
+[catalog.xml](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/catalog.xml)
 
 ```R
 YEARS <- L3SMI$get_catalogs()
 Y2015 <- YEARS[['2015']]$GET()
 Y2015
 Reference Class: "TopCatalogRef" 
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/catalog.xml
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/catalog.xml
   children: service dataset
   catalogs: 001 002 003 ... 197 198 199 200 201
 ```  
 
 And now we select the most recent day (let's assume that is day 201) 
-[web](http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/contents.html) 
-[catalog.xml](http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/catalog.xml)
+[web](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/contents.html) 
+[catalog.xml](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/catalog.xml)
 
 ```R
 DAYS <- Y2015$get_catalogs()
 D201 <- DAYS[['201']]$GET()
 D201
 Reference Class: "TopCatalogRef" 
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/catalog.xml
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/catalog.xml
   children: service dataset
   datasets: A2015201.L3m_DAY_NSST_sst_4km.nc A2015201.L3m_DAY_NSST_sst_9km.nc A2015201.L3m_DAY_SST4_sst4_4km.nc A2015201.L3m_DAY_SST4_sst4_9km.nc
 ```
@@ -251,7 +253,7 @@ datasets <- D201$get_datasets()
 datasets
 $A2015201.L3m_DAY_NSST_sst_4km.nc
 Reference Class: "DatasetRefClass"
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_4km.nc
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_4km.nc
   children: dataSize date access
   dataSize:47093655
   date:2015-08-05T11:28:29
@@ -260,7 +262,7 @@ Reference Class: "DatasetRefClass"
 
 $A2015201.L3m_DAY_NSST_sst_9km.nc
 Reference Class: "DatasetRefClass"
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_9km.nc
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_9km.nc
   children: dataSize date access
   dataSize:12376940
   date:2015-08-05T11:28:41
@@ -269,7 +271,7 @@ Reference Class: "DatasetRefClass"
 
 $A2015201.L3m_DAY_SST4_sst4_4km.nc
 Reference Class: "DatasetRefClass"
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_4km.nc
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_4km.nc
   children: dataSize date access
   dataSize:47143175
   date:2015-08-05T11:22:01
@@ -278,7 +280,7 @@ Reference Class: "DatasetRefClass"
 
 $A2015201.L3m_DAY_SST4_sst4_9km.nc
 Reference Class: "DatasetRefClass"
-  url: http://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_9km.nc
+  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_9km.nc
   children: dataSize date access
   dataSize:12441580
   date:2015-08-05T11:22:14
