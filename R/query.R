@@ -43,7 +43,7 @@
 #'    }
 #' @seealso \code{\link{get_monthdays}}, \code{\link{get_8days}} and \code{\link{get_seasondays}}
 obpg_query <- function(
-   top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
+   top = 'https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
    platform = 'MODISA', 
    product = 'L3SMI',
    year = format(as.Date(Sys.Date()), "%Y"),
@@ -51,7 +51,8 @@ obpg_query <- function(
    what = c("all", "most_recent", "within", "before", "after")[1],
    date_filter = NULL,
    greplargs = NULL,
-   verbose = FALSE) {
+   verbose = FALSE,
+   userpassword = c(user = 'user', password = 'password')) {
       
    # Used to scan 'all' days for the listed year
    # Product CatalogRefClass
