@@ -4,12 +4,14 @@
 \alias{obpg_query}
 \title{A basic query function to retrieve one or more datasets}
 \usage{
-obpg_query(top = "https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
+
+  obpg_query(top = "https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
   platform = "MODISA", product = "L3SMI",
   year = format(as.Date(Sys.Date()), "\%Y"),
-  day = format(as.Date(Sys.Date()), "\%j"), what = c("all", "most_recent",
-  "within", "before", "after")[1], date_filter = NULL, greplargs = NULL,
-  verbose = FALSE, userpassword = c(user = "user", password = "password"))
+  day = format(as.Date(Sys.Date()), "\%j"), what = c("all",
+  "most_recent", "within", "before", "after")[1], date_filter = NULL,
+  greplargs = NULL, verbose = FALSE, userpassword = c(user = "user",
+  password = "password"))
 }
 \arguments{
 \item{top}{character, uri of the top catalog}
@@ -70,4 +72,3 @@ A basic query function to retrieve one or more datasets
 \seealso{
 \code{\link{get_monthdays}}, \code{\link{get_8days}} and \code{\link{get_seasondays}}
 }
-

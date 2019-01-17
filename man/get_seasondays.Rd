@@ -28,4 +28,4 @@ Useful for retrieving seasonal data.
 Other DAYS: \code{\link{get_8days}},
   \code{\link{get_monthdays}}
 }
-
+\concept{DAYS}

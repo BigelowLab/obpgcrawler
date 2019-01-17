@@ -28,4 +28,4 @@ Useful for retrieving monthly data stored ont the first day of each month.
 Other DAYS: \code{\link{get_8days}},
   \code{\link{get_seasondays}}
 }
-
+\concept{DAYS}

@@ -13,10 +13,11 @@ Maintainer: Ben Tupper <btupper@bigelow.org>
 Author: Ben Tupper <btupper@bigelow.org>
 URL: https://github.com/btupper/obpgcrawler
 License: GPL (>= 2)
+Encoding: UTF-8
 Collate:
     days.R
     ngm.R
     obpgcrawler-package.R
     query.R
     direct.R
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.1

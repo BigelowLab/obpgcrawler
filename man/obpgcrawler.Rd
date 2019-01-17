@@ -11,4 +11,3 @@ A crawler for programmatically working with the OpeNDAP data offerings from
 \examples{
 \dontrun{ Top <- threddscrawler::get_catalog(platform = 'MODISA', verbose = TRUE) }
 }
-

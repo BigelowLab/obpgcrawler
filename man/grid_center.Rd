@@ -17,6 +17,5 @@ grid_center(theta = 45, lambda = 45, a = 1)
 two element nmeric vector of x,y
 }
 \description{
-Compute the grid x,y locations from longitude and latitude
+From The Nested Grid Mode, Norman A. Phillips, April 1979, NOAA Technical Report NWS 22
 }
-

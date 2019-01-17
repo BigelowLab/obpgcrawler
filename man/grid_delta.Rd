@@ -15,6 +15,5 @@ grid_delta(NH = 10, a = 1)
 numeric
 }
 \description{
-Compute the grid delta
+From The Nested Grid Mode, Norman A. Phillips, April 1979, NOAA Technical Report NWS 22
 }
-

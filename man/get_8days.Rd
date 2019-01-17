@@ -30,4 +30,4 @@ leap years when finding the last day of 8-day intervals.
 Other DAYS: \code{\link{get_monthdays}},
   \code{\link{get_seasondays}}
 }
-
+\concept{DAYS}
