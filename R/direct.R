@@ -9,7 +9,7 @@
 #' @param ... other argments for \code{\link{download.file}}
 #' @return 0 for success and non-zero otherwise - see \code{\link{download.file}}
 download_direct <- function(filename, output_filename,
-    output_path = ".", base_uri = 'http://oceandata.sci.gsfc.nasa.gov/cgi/getfile',
+    output_path = ".", base_uri = 'https://oceandata.sci.gsfc.nasa.gov/cgi/getfile',
     mode = 'wb', ...){
     
     if (missing(filename)) stop("filename is required")
@@ -45,7 +45,7 @@ download_direct <- function(filename, output_filename,
 #' @param alt_uri character or NULL.  Use this to specify your own full uri which ignores
 #'  other parameters.
 #' @return data.frame or NULL
-query_direct <- function(base_uri = 'http://oceandata.sci.gsfc.nasa.gov', 
+query_direct <- function(base_uri = 'https://oceandata.sci.gsfc.nasa.gov', 
     mission = 'MODIS-Aqua',
     level = 'Mapped',
     freq = 'Daily',

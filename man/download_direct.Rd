@@ -5,7 +5,7 @@
 \title{Download a direct data access file using \code{\link{download.file}}}
 \usage{
 download_direct(filename, output_filename, output_path = ".",
-  base_uri = "http://oceandata.sci.gsfc.nasa.gov/cgi/getfile", mode = "wb",
+  base_uri = "https://oceandata.sci.gsfc.nasa.gov/cgi/getfile", mode = "wb",
   ...)
 }
 \arguments{

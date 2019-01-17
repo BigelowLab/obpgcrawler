@@ -162,9 +162,10 @@ obpg_query <- function(
          R[[y]] <- get_all_obpg(Product, y, yd[[i]], greplargs = greplargs, verbose = verbose)
       }
 
-      R <- unlist(R, use.names = FALSE)
-      names(R) <- sapply(R, function(x) x$name)
-   
+      if (length(R) > 0){
+          R <- unlist(R, use.names = FALSE)
+          names(R) <- sapply(R, function(x) x$name)
+      }
    } else {
       # retrieve the days from the years specified
       R <- get_all_obpg(Product, year, day, greplargs = greplargs)
