@@ -35,7 +35,7 @@ You can improve efficiency by preselecting days for months, days, or seasons.}
  }}
 
 \item{date_filter}{POSIXct or Date, one or two element vector populated according to
-the \code{what} parameter.  By default NULL.  It is an error to not match 
+the \code{what} parameter.  By default NULL.  It is an error to not match
 the value of date_filter}
 
 \item{greplargs}{list or NULL, if a list the provide two elements,
@@ -43,6 +43,9 @@ pattern=character and fixed=logical, which are arguments for \code{grepl} If fix
 then be sure to provide a regex for the pattern value.}
 
 \item{verbose}{logical, by default FALSE}
+
+\item{userpassword}{character, a two element named vector with elements "user"
+and "password"}
 }
 \value{
 list of DatasetRefClass or NULL
@@ -54,13 +57,13 @@ A basic query function to retrieve one or more datasets
    \dontrun{
       query <- obpg_query(
          top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
-         platform = 'MODISA', 
+         platform = 'MODISA',
          product = 'L3SMI',
          what = 'most_recent',
          greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
-      query <- obpg_query( 
+      query <- obpg_query(
          top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
-         platform = 'MODISA', 
+         platform = 'MODISA',
          product = 'L3SMI',
          what = 'within',
          date_filter = as.POSIXct(c("2008-01-01", "2008-06-01"), format = "\%Y-\%m-\%d"),
