@@ -39,6 +39,12 @@ a character L3 filename
 \description{
 Construct an new-convention L3 filename from consituent segments
 }
+\examples{
+\dontrun{
+compose_L3(mission = 'MODIS', date = as.Date("2001-01-01"))
+# [1] "MODIS_AQUA.2001001.L3m.DAY.CHL.chlor_a.4km.nc"
+}
+}
 \seealso{
 \href{https://oceancolor.gsfc.nasa.gov/docs/filenaming-convention/}{Ocean Color Filename Convention}
 }

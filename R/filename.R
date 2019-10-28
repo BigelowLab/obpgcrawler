@@ -14,6 +14,11 @@
 #' @param res character such as '4km' or NA to skip
 #' @param ext character such as 'nc' or NA to skip
 #' @return a character L3 filename
+#' @examples
+#' \dontrun{
+#' compose_L3(mission = 'MODIS', date = as.Date("2001-01-01"))
+#' # [1] "MODIS_AQUA.2001001.L3m.DAY.CHL.chlor_a.4km.nc"
+#' }
 compose_L3 <- function(
   mission = c("MODIS",  "S3A", "SNPP", "ADEOS", "SEASTAR")[1],
   instrument = c("AQUA", "TERRA", "OLCI", "SEAWIFS", "VIIRS", "OCTS")[1],
