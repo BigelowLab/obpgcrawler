@@ -6,9 +6,8 @@
 \usage{
 
   obpg_query(top = "https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
-  platform = "MODISA", product = "L3SMI",
-  year = format(as.Date(Sys.Date()), "\%Y"),
-  day = format(as.Date(Sys.Date()), "\%j"), what = c("all",
+  platform = "MODISA", product = "L3SMI", year = format(Sys.Date(),
+  "\%Y"), mmdd = format(Sys.Date(), "\%m\%d"), when = c("all", "any",
   "most_recent", "within", "before", "after")[1], date_filter = NULL,
   greplargs = NULL, verbose = FALSE, userpassword = c(user = "user",
   password = "password"))
@@ -20,14 +19,16 @@
 
 \item{product}{character, the product type (L3SMI, etc.)}
 
-\item{year}{character or numeric, four digit year(s) - ignored if what is not 'all'}
+\item{year}{character or numeric, four digit year(s) - ignored if \code{when} is not 'all'}
 
-\item{day}{character or numeric, three digit year of day(s) - ignored if what is not 'all'.
-You can improve efficiency by preselecting days for months, days, or seasons.}
+\item{mmdd}{character or numeric, 4 digit month-day - ignored if \code{when} is not 'all'.
+You can improve efficiency by preselecting days for months, days, or
+seasons using \code{year} and \code{mmdd}}
 
-\item{what}{character, optional filters
+\item{when}{character, optional filters
 \itemize{
     \item{all - return all occurences, the default, used with year and day, date_filter = NULL}
+    \item{any - same as all}
     \item{most_recent - return only the most recent, date_filter = NULL}
     \item{within - return the occurrences bounded by date_filter first and secomd elements}
     \item{before - return the occurences prior to the first date_filter element}
@@ -35,12 +36,12 @@ You can improve efficiency by preselecting days for months, days, or seasons.}
  }}
 
 \item{date_filter}{POSIXct or Date, one or two element vector populated according to
-the \code{what} parameter.  By default NULL.  It is an error to not match
+the \code{when} parameter.  By default NULL.  It is an error to not match
 the value of date_filter}
 
 \item{greplargs}{list or NULL, if a list the provide two elements,
-pattern=character and fixed=logical, which are arguments for \code{grepl} If fixed is FALSE
-then be sure to provide a regex for the pattern value.}
+pattern=character and fixed=logical, which are arguments for \code{grepl}.
+If \code{fixed} is FALSE then be sure to provide a regex for the pattern value.}
 
 \item{verbose}{logical, by default FALSE}
 
@@ -59,14 +60,14 @@ A basic query function to retrieve one or more datasets
          top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
          platform = 'MODISA',
          product = 'L3SMI',
-         what = 'most_recent',
+         when = 'most_recent',
          greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
       query <- obpg_query(
          top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
          platform = 'MODISA',
          product = 'L3SMI',
-         what = 'within',
-         date_filter = as.POSIXct(c("2008-01-01", "2008-06-01"), format = "\%Y-\%m-\%d"),
+         when = 'within',
+         date_filter = as.Date(c("2008-01-01", "2008-06-01"), format = "\%Y-\%m-\%d"),
          greplargs = list(
             chl = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE),
             sst = list(pattern='8D_SST_sst_4km', fixed = TRUE)) )

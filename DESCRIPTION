@@ -9,9 +9,9 @@ Imports:
     utils,
     httr,
     xml2,
-    threddscrawler,
+    thredds,
     rvest,
-    magrittr
+    dplyr
 Maintainer: Ben Tupper <btupper@bigelow.org>
 Author: Ben Tupper <btupper@bigelow.org>
 URL: https://github.com/btupper/obpgcrawler

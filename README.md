@@ -1,10 +1,10 @@
 #### OBPG Crawler
 
-[Ocean Biology Processing Group](https://oceancolor.gsfc.nasa.gov/cms/homepage) provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](https://oceancolor.gsfc.nasa.gov/cms/homepage).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
+[Ocean Biology Processing Group](https://oceancolor.gsfc.nasa.gov/) provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](https://oceancolor.gsfc.nasa.gov/).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
 
 ##### THREDDS Queries
 
-OBPG provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](https://oceancolor.gsfc.nasa.gov/).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
+OBPG provides OpeNDAP access to data.  `obpgcrawler` package provides basic THREDDS crawling facilties.  The idea is to programmatically search the OpeNDAP offerings at [OceanColor](https://oceandata.sci.gsfc.nasa.gov/opendap/).  There are many facilities for searching the website, but using the THREDDS catalogs for programmatic access seems just right.  Use cases...
 
 + Retrieve the most recent 8DAY 4km CHLA from MODISA (example below)
 + Retrieve MODISA Chlorophyll 8DAY 4km L3SMI's from days 1-30 in 2014 and 2015 (example below)
@@ -14,15 +14,21 @@ The above examples use the simple function, `obpg_query()`.  At the very end of 
 
 ##### Direct Data Access Queries
 
-In addition to THREDDS crawling, you can also search and download from [OBPG's OceanData](http://oceandata.sci.gsfc.nasa.gov/).  Direct data queries don't provide the same level of sophistication as THREDDS queries, but they can be useful 
+In addition to THREDDS crawling, you can also search and download from [OBPG's OceanData](http://oceandata.sci.gsfc.nasa.gov/).  Direct data queries don't provide the same level of sophistication as THREDDS queries, but they can be useful.
 
 #### Requirements
 
-[R >= 3.0](https://cran.r-project.org)
+[R >= 3.5](https://cran.r-project.org)
 
-[threddscrawler](https://github.com/BigelowLab/threddscrawler)
+[thredds](https://github.com/BigelowLab/thredds)
 
-[rvest](https://cran.r-project.org/web/packages/rvest/index.html)
+[dplyr](https://cran.r-project.org/package=dplyr)
+
+[xml2](https://cran.r-project.org/package=xml2)
+
+[httr](https://cran.r-project.org/package=httr)
+
+[rvest](https://cran.r-project.org/package=rvest)
 
 #### Installation
 
@@ -31,8 +37,8 @@ It is easy to install with [devtools](https://cran.r-project.org/web/packages/de
 ```R
 library(devtools)
 
-# if you don't have threddscrawler installed
-install_github("BigelowLab/threddscrawler")
+# if you don't have thredds installed
+install_github("BigelowLab/thredds")
 
 install_github("BigelowLab/obpgcrawler")
 ```
@@ -42,7 +48,7 @@ install_github("BigelowLab/obpgcrawler")
 Direct data access is organized by mission, processing level, year and parameter.  Some missions offered even more refined options like frequency and resolution.  Queries return a data.frame of the files available.
 
 ```R
-x <- query_direct(mission = 'MODIS-Aqua', level = 'Mapped', freq = 'Daily', param = 'chlor_a', year = 2016)
+x <- obpgcrawler::query_direct(mission = 'MODIS-Aqua', level = 'Mapped', freq = 'Daily', param = 'chlor_a', year = 2016)
 head(x)
 #                              Filename       Last Modified    Size
 # 1 A2016001.L3m_DAY_CHL_chlor_a_4km.nc 2016-01-17 19:03:00 7135019
@@ -72,8 +78,7 @@ OBPG data is organized by PLATFORM > PRODUCT > YEAR > DAY.  Data files are store
 + PLATFORM currently MODISA MODIST OCTS SeaWiFS or VIIRS
 + PRODUCT currently only L3SMI
 + YEAR such as 2002 2003 ... 2013 2014 2015
-+ DAY such as 001 002 003 ...  360 361
-
++ DAY such as 001 002 003 ...  360 361 (or 0101, 0102, 0103 ... 1230 1231)
 
 #### Way good easy way examples
 
@@ -85,10 +90,10 @@ These two examples show how to use the `obpg_query()` function to simply collect
 
 ```R
 library(obpgcrawler)
-query <- obpg_query(top = 'https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
+query <- obpgcrawler::obpg_query(top = 'https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
    platform = 'MODISA', 
    product = 'L3SMI',
-   what = 'most_recent',
+   when = 'most_recent',
    greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
 query
 $A20151932015200.L3m_8D_CHL_chlor_a_4km.nc

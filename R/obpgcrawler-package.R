@@ -1,5 +1,3 @@
-# obpgcrawler-package.R
-
 #' obpgcrawler - programmatic access to Ocean Color OpeNDAP servcies.
 #'
 #' A crawler for programmatically working with the OpeNDAP data offerings from
@@ -7,8 +5,7 @@
 #'
 #' @name obpgcrawler
 #' @docType package
-#' @import threddscrawler
-#' @importFrom magrittr %>%
+#' @importFrom dplyr %>%
 #' @importFrom utils download.file
 #' @examples
 #' \dontrun{ Top <- threddscrawler::get_catalog(platform = 'MODISA', verbose = TRUE) }

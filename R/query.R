@@ -1,26 +1,31 @@
+
+
+
 #' A basic query function to retrieve one or more datasets
 #'
 #' @export
 #' @param top character, uri of the top catalog
 #' @param platform character, the name of the platform (MODISA, MODIST, OCTS, SeaWiFS, VIIRS, etc.)
 #' @param product character, the product type (L3SMI, etc.)
-#' @param year character or numeric, four digit year(s) - ignored if what is not 'all'
-#' @param day character or numeric, three digit year of day(s) - ignored if what is not 'all'.
-#'    You can improve efficiency by preselecting days for months, days, or seasons.
-#' @param what character, optional filters
+#' @param year character or numeric, four digit year(s) - ignored if \code{when} is not 'all'
+#' @param mmdd character or numeric, 4 digit month-day - ignored if \code{when} is not 'all'.
+#'    You can improve efficiency by preselecting days for months, days, or
+#'    seasons using \code{year} and \code{mmdd}
+#' @param when character, optional filters
 #'   \itemize{
 #'       \item{all - return all occurences, the default, used with year and day, date_filter = NULL}
+#'       \item{any - same as all}
 #'       \item{most_recent - return only the most recent, date_filter = NULL}
 #'       \item{within - return the occurrences bounded by date_filter first and secomd elements}
 #'       \item{before - return the occurences prior to the first date_filter element}
 #'       \item{after - return the occurrences after the first date_filter element}
 #'    }
 #' @param date_filter POSIXct or Date, one or two element vector populated according to
-#'    the \code{what} parameter.  By default NULL.  It is an error to not match
+#'    the \code{when} parameter.  By default NULL.  It is an error to not match
 #'    the value of date_filter
 #' @param greplargs list or NULL, if a list the provide two elements,
-#'    pattern=character and fixed=logical, which are arguments for \code{grepl} If fixed is FALSE
-#'    then be sure to provide a regex for the pattern value.
+#'    pattern=character and fixed=logical, which are arguments for \code{grepl}.
+#'    If \code{fixed} is FALSE then be sure to provide a regex for the pattern value.
 #' @param verbose logical, by default FALSE
 #' @param userpassword character, a two element named vector with elements "user"
 #'        and "password"
@@ -31,14 +36,14 @@
 #'          top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
 #'          platform = 'MODISA',
 #'          product = 'L3SMI',
-#'          what = 'most_recent',
+#'          when = 'most_recent',
 #'          greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
 #'       query <- obpg_query(
 #'          top = 'http://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
 #'          platform = 'MODISA',
 #'          product = 'L3SMI',
-#'          what = 'within',
-#'          date_filter = as.POSIXct(c("2008-01-01", "2008-06-01"), format = "%Y-%m-%d"),
+#'          when = 'within',
+#'          date_filter = as.Date(c("2008-01-01", "2008-06-01"), format = "%Y-%m-%d"),
 #'          greplargs = list(
 #'             chl = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE),
 #'             sst = list(pattern='8D_SST_sst_4km', fixed = TRUE)) )
@@ -48,79 +53,74 @@ obpg_query <- function(
    top = 'https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
    platform = 'MODISA',
    product = 'L3SMI',
-   year = format(as.Date(Sys.Date()), "%Y"),
-   day = format(as.Date(Sys.Date()), "%j"),
-   what = c("all", "most_recent", "within", "before", "after")[1],
+   year = format(Sys.Date(), "%Y"),
+   mmdd = format(Sys.Date(), "%m%d"),
+   when = c("all", "any", "most_recent", "within", "before", "after")[1],
    date_filter = NULL,
    greplargs = NULL,
    verbose = FALSE,
    userpassword = c(user = 'user', password = 'password')) {
 
-   # Used to scan 'all' days for the listed year
-   # Product CatalogRefClass
-   # year one or more character in YYYY format
-   # day one or more charcater in format JJJ
-   # greplargs list of one or more grepl args
-   get_all_obpg <- function(Product, year, day, greplargs = NULL, verbose = FALSE) {
-      #all for a given YEAR/DAY
-      R <- NULL
-      Years <- Product$get_catalogs()
-      Y <- Years[year]
-      Y <- Y[!sapply(Y, is.null)]
-      if (!is.null(Y)){
-         for (y in Y){
-            Days <- y$GET()$get_catalogs()
-            D <- Days[day]
-            D <- D[!sapply(D, is.null)]
-            if (!is.null(D)){
-               for (d in D){
-                  dtop <- d$GET()
-                  if (!is.null(dtop)){
-                     datasets <- dtop$get_datasets()
-                     if (!is.null(datasets)){
-                        ix <- threddscrawler::grepl_it(names(datasets), greplargs)
-                        if (any(ix)) R[names(datasets)[ix]] <- datasets[ix]
-                     } # datasets?
-                  } # dtop is !null
-               } # D loop
-            } # day is found
-        } # Y loop
-      } #year is found
-      return(R)
-   }
-   Top <- threddscrawler::get_catalog(top[1], verbose = verbose)
+  # Used to scan all/any days for the listed year
+  # Product CatalogRefClass
+  # year one or more character in YYYY format
+  # mmdd one or more charcater in format mmdd
+  # greplargs list of one or more grepl args
+  get_all_obpg <- function(Product, year, mmdd, greplargs = NULL, verbose = FALSE) {
+    if (!is.character(year)) year <- sprintf("%0.4i", year)
+    R <- NULL
+    YY <- Product$get_catalog()$get_catalogs(year)
+    for (iy in seq_along(YY)){
+      DD <- YY[[iy]]$get_catalog()$get_catalogs(mmdd)
+      for (D in DD){
+        dd <- D$get_catalog()$get_datasets()
+        if (!is.null(greplargs)){
+            ix <- thredds::grepl_it(names(dd), greplargs)
+            dd <- dd[ix]
+        }
+        R[names(dd)] <- dd
+      } #DD loop
+    } # YY loop
+    return(R)
+  }
+
+
+   Top <- thredds::get_catalog(top[1], verbose = verbose, ns = "thredds")
    if (is.null(Top)) {
       cat("error getting catalog for", top[1], "\n")
       return(NULL)
    }
 
-   Platform <- Top$get_catalogs()[[platform[1]]]$GET()
+   Platform <- Top$get_catalogs()[[platform[1]]]$get_catalog()
    if (is.null(Platform)) {
       cat("error getting catalog for", platform[1], "\n")
       return(NULL)
    }
 
-   Product <- Platform$get_catalogs()[[product[1]]]$GET()
+   Product <- Platform$get_catalogs(product[1])[[1]]
    if (is.null(Product)) {
-      cat("error getting catalog for", platform[1], "\n")
+      cat("error getting catalog for", product[1], "\n")
       return(NULL)
    }
 
    if (is.numeric(year)) year <- sprintf("%0.4i",year)
-   if (is.numeric(day)) day <- sprintf("%0.3i", day)
+   if (is.numeric(mmdd)) mmdd <- sprintf("%0.4i", mmdd)
+   if (inherits(mmdd, 'Date') || inherits(mmdd, 'POSIXct')) mmdd <- format(mmdd, '%m%d')
 
-   what <- tolower(what[1])
+   when <- tolower(when[1])
    R <- list()
-   if (what == "most_recent"){
+   if (when == "most_recent"){
       while(length(R) == 0){
-         Years <- Product$get_catalogs()
-         for (y in rev(names(Years))){
-            Y <- Years[[y]]$GET()
-            Days <- Y$get_catalogs()
-            for (d in rev(names(Days))){
-               D <- Days[[d]]$GET()
+         YY <- Product$get_catalog()$get_catalogs()
+         YY <- YY[sort(names(YY), decreasing = TRUE)]
+         for (Y in YY){
+            Year <- Y$GET()
+            MMDD <- Year$get_catalogs()
+            MMDD <- MMDD[sort(names(MMDD), decreasing = TRUE)]
+            for (md in MMDD){
+               D <- md$GET()
                datasets <- D$get_datasets()
-               ix <- threddscrawler::grepl_it(names(datasets), greplargs)
+               ix <- thredds::grepl_it(names(datasets), greplargs)
                if (any(ix)){
                   R <- datasets[ix]
                   break
@@ -131,33 +131,33 @@ obpg_query <- function(
          } #years
       }
 
-   } else if (what %in% c('within', "before", "after")){
+   } else if (when %in% c('within', "before", "after")){
 
       if (is.null(date_filter)){
-         cat("if what is 'within', 'before' or 'after' then date_filter must be provided\n")
+         cat("if when is 'within', 'before' or 'after' then date_filter must be provided\n")
          return(NULL)
       }
-      if ((what == 'within') && (length(date_filter) < 2) ) {
-         cat("if what is 'within' then date_filter have [begin,end] elements\n")
+      if ((when == 'within') && (length(date_filter) < 2) ) {
+         cat("if when is 'within' then date_filter have [begin,end] elements\n")
          return(NULL)
       }
       if (!inherits(date_filter, "POSIXt") && !inherits(date_filter, "Date")){
-         cat("if what is 'within', 'before' or 'after' then date_filter must be POSIXt or Date class\n")
+         cat("if when is 'within', 'before' or 'after' then date_filter must be POSIXt or Date class\n")
          return(NULL)
       }
 
       # compute the beginning and end
-      tbounds <-   switch(tolower(what),
+      tbounds <-   switch(tolower(when),
             'within' = date_filter[1:2],
             'after' = c(date_filter[1], as.POSIXct(Sys.time())), # from then to present
             'before' = c( as.POSIXct("1990-01-01 00:00:00"), date_filter[1]) ) # from 1990 to then
       # convert to daily steps
       tsteps <- seq(tbounds[1], tbounds[2], by = 'day')
       year <- format(tsteps, "%Y")
-      day <- format(tsteps,"%j")
+      mmdd <- format(tsteps,"%m%d")
 
-      yd <- split(day, year)
-      # note how this differs from what = 'all', here we explicitly iterate through
+      yd <- split(mmdd, year)
+      # note how this differs from when = 'all', here we explicitly iterate through
       # the years (days may be different for each year
       for (i in seq_along(yd)){
          y <- names(yd)[i]
@@ -169,8 +169,10 @@ obpg_query <- function(
           names(R) <- sapply(R, function(x) x$name)
       }
    } else {
+      # any or all
       # retrieve the days from the years specified
-      R <- get_all_obpg(Product, year, day, greplargs = greplargs)
+      R <- get_all_obpg(Product, year, mmdd, greplargs = greplargs)
+
    }
 
    # if none found then we return NULL (not an empty list)
@@ -180,5 +182,3 @@ obpg_query <- function(
    }
    invisible(R)
 }
-
-

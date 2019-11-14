@@ -1,3 +1,69 @@
+#' Decompose a new-convention L3 filename
+#'
+#' @seealso \href{https://oceancolor.gsfc.nasa.gov/docs/filenaming-convention/}{Ocean Color Filename Convention}
+#' @export
+#' @param x character vector of one or more filenames
+#' @return a tibble of one or more rows (one row for each input filename)
+#' \itemize{
+#' \item{mission character }
+#' \item{instrument character }
+#' \item{type character possibly NA if not present in filename}
+#' \item{date1 Date start date}
+#' \item{date2 numeric or Date end date or NA if none}
+#' \item{level character }
+#' \item{period character }
+#' \item{suite character }
+#' \item{product character }
+#' \item{res character }
+#' \item{nrt character possibly NA if not present in filename}
+#' \item{ext character }
+#' }
+decompose_L3 <- function(
+  x = c("SNPP_VIIRS.20180703.L3m.DAY.OC.chlor_a.4km.nc",
+        "SNPP_VIIRS.20180703.L3m.DAY.OC.chl_ocx.4km.nc") ){
+
+  # mission_instrument_type from SNPP_VIIRS
+  miss_inst_typ <- function(x) {
+    ss <- strsplit(x, "_", fixed = TRUE)
+    m <- sapply(ss, '[[', 1)
+    i <- sapply(ss, '[[', 2)
+    n <- lengths(ss)
+    typ <- rep(NA_character_, length(ss))
+    hastyp <- n > 2
+    if (any(hastyp)) typ[hastyp] <- sapply(ss[hastyp], "[[", 2)
+    dplyr::tibble(mission = m, instrument = i, type = typ)
+  }
+  # dates from 20180703 and or 20180703_20180706
+  date1_date2 <- function(x){
+    ss <- strsplit(x, "_", fixed = TRUE)
+    d0 <- as.Date(sapply(ss, '[[', 1), format = '%Y%m%d')
+    n <- lengths(ss)
+    d1 <- rep(NA_real_, length(ss))
+    hasd1 <- n > 2
+    if (any(hasd1)) d1[hasd1] <- as.Date(sapply(ss[hasd1], '[[', 2), format = '%Y%m%d')
+    dplyr::tibble(date1 = d0, date2 = d1)
+  }
+  ff <- strsplit(basename(x), ".", fixed = TRUE)
+  mit <- miss_inst_typ(sapply(ff, "[[", 1))
+  dates <- date1_date2(sapply(ff, "[[", 2))
+  y <- dplyr::tibble(
+    level = sapply(ff, "[[", 3),
+    period = sapply(ff, "[[", 4),
+    suite = sapply(ff, "[[", 5),
+    product   = sapply(ff, "[[", 6),
+    res       = sapply(ff, "[[", 7))
+  r <- dplyr::bind_cols(mit, dates, y)
+  n <- lengths(ff)
+  ix <- n > 8
+  nrt <- rep(NA_character_, length(ff))
+  if (any(ix)) nrt[ix] <- sapply(ff[ix], "[[", 8)
+  ext <- sapply(seq_along(n), function(i) ff[[i]][[n[i]]])
+  r %>% dplyr::mutate(
+    nrt = nrt,
+    ext = ext)
+}
+
+
 #' Construct an new-convention L3 filename from consituent segments
 #'
 #' @seealso \href{https://oceancolor.gsfc.nasa.gov/docs/filenaming-convention/}{Ocean Color Filename Convention}
