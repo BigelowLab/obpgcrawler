@@ -109,6 +109,7 @@ obpg_query <- function(
 
    when <- tolower(when[1])
    R <- list()
+
    if (when == "most_recent"){
       while(length(R) == 0){
          YY <- Product$get_catalog()$get_catalogs()

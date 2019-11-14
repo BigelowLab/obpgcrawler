@@ -34,7 +34,7 @@ In addition to THREDDS crawling, you can also search and download from [OBPG's O
 
 It is easy to install with [devtools](https://cran.r-project.org/web/packages/devtools/index.html)
 
-```R
+```
 library(devtools)
 
 # if you don't have thredds installed
@@ -47,7 +47,7 @@ install_github("BigelowLab/obpgcrawler")
 
 Direct data access is organized by mission, processing level, year and parameter.  Some missions offered even more refined options like frequency and resolution.  Queries return a data.frame of the files available.
 
-```R
+```
 x <- obpgcrawler::query_direct(mission = 'MODIS-Aqua', level = 'Mapped', freq = 'Daily', param = 'chlor_a', year = 2016)
 head(x)
 #                              Filename       Last Modified    Size
@@ -88,7 +88,7 @@ These two examples show how to use the `obpg_query()` function to simply collect
 
 ###### A: Go gettum with obpg_query()!  Note, the date will change if you run this.
 
-```R
+```
 library(obpgcrawler)
 query <- obpgcrawler::obpg_query(top = 'https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml',
    platform = 'MODISA', 
@@ -96,50 +96,50 @@ query <- obpgcrawler::obpg_query(top = 'https://oceandata.sci.gsfc.nasa.gov/open
    when = 'most_recent',
    greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
 query
-$A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
-Reference Class: "DatasetRefClass"
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/193/A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
-  children: dataSize date access
-  dataSize:26844930
-  date:2015-08-05T11:05:15
-  serviceName:dap
-  urlPath:/MODISA/L3SMI/2015/193/A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
+# $A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
+# Reference Class: "DatasetRefClass"
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/193/A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
+#   children: dataSize date access
+#   dataSize:26844930
+#   date:2015-08-05T11:05:15
+#   serviceName:dap
+#   urlPath:/MODISA/L3SMI/2015/193/A20151932015200.L3m_8D_CHL_chlor_a_4km.nc
 ```
 
 ###### Q: Can I get all of the MODISA Chlorophyll 8-day L3SMI's from days 1-30 in 2014 and 2015?
 
 ###### A: Yes, with obpg_query()!  Note that each day for each year is returned.
 
-```R
+```
 query <- obpg_query(year = c('2014', '2015'),day = 1:30,
    greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
 query
-$A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
-Reference Class: "DatasetRefClass"
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2014/001/A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
-  children: dataSize date access
-  dataSize:30411689
-  date:2015-06-26T02:52:51
-  serviceName:dap
-  urlPath:/MODISA/L3SMI/2014/001/A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
-
-    <... snip there are 8 of them ...>
-
-$A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
-Reference Class: "DatasetRefClass"
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/025/A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
-  children: dataSize date access
-  dataSize:31609299
-  date:2015-06-26T02:52:55
-  serviceName:dap
-  urlPath:/MODISA/L3SMI/2015/025/A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
+# $A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
+# Reference Class: "DatasetRefClass"
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2014/001/A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
+#   children: dataSize date access
+#   dataSize:30411689
+#   date:2015-06-26T02:52:51
+#   serviceName:dap
+#   urlPath:/MODISA/L3SMI/2014/001/A20140012014008.L3m_8D_CHL_chlor_a_4km.nc
+# 
+#     <... snip there are more of them ...>
+#
+# $A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
+# Reference Class: "DatasetRefClass"
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/025/A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
+#   children: dataSize date access
+#   dataSize:31609299
+#   date:2015-06-26T02:52:55
+#   serviceName:dap
+#   urlPath:/MODISA/L3SMI/2015/025/A20150252015032.L3m_8D_CHL_chlor_a_4km.nc
 ```
 
 #### Best practices for getting data
 
 OBPG organizes data by platform/product/year/day - you can improve access times by precomputing the days to search.  In addition, you can specify more than one search pattern in one search.  For example, to get the monthly SST and CHL for 2008 and 2009 we supply two search patterns as well as explicitly provide the days to search.
 
-```R
+```
 top = 'https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml'
 platform = 'MODISA'
 product = 'L3SMI'
@@ -163,7 +163,7 @@ x <- c(
 
 An alternative is to provide a window of dates within which to search.  This will iterate through all of the days between to the two times provided - which can be slower than the above.
 
-```R
+```
 date_filter <- as.Date(c("2008-01-01", "2009-12-31"))
 x <- obpg_query(top = top, platform = platform, product = product,
         what = 'within', date_filter = date_filter,
@@ -175,7 +175,7 @@ x <- obpg_query(top = top, platform = platform, product = product,
 
 A dataset can be accessed using the [ncdf4](https://cran.r-project.org/web/packages/ncdf4/index.html) or [spnc](https://github.com/btupper/spnc) packages.  Below is an example using `spnc`.
 
-```R
+```
 library(spnc)
 query <- obpg_query(year = c('2014', '2015'),day = 1:30,
 +    greplargs = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE))
@@ -215,113 +215,148 @@ First we get the top level catalog for the OpeNDAP offerings.
 [web](https://oceandata.sci.gsfc.nasa.gov/opendap/) 
 [catalog.xml](https://oceandata.sci.gsfc.nasa.gov/opendap/hyrax/catalog.xml)
 
-```R
-library(threddscrawler)
+```
+library(thredds)
 library(obpgcrawler)
 uri <- 'https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml'
-Top <- threddscrawler::get_catalog(uri)
+Top <- thredds::get_catalog(uri, ns = 'thredds')
 Top
-Reference Class: "TopCatalogRef"
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml
-  children: service dataset
-  catalogs: MODISA MODIST OCTS SeaWiFS VIIRS
+# Reference Class: "TopCatalogRef"
+#   verbose_mode: FALSE
+#   tries: 3
+#   xpath_ns: thredds
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml
+#   children: service dataset
+#   catalogs [9]: CZCS MODISA MODIST Merged_ATV OCTS SeaWiFS VIIRS VIIRSJ1 mig-tmp
+#   datasets [1]: /
 ```
 
 Next we select the MODISA catalog. 
 [web](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/contents.html) 
 [catalog.xml](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/catalog.xml)
 
-```R
+```
 catalogs <- Top$get_catalogs()
 MODISA <- catalogs[['MODISA']]$GET()
 MODISA
-Reference Class: "TopCatalogRef"
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/catalog.xml
-  children: service dataset
-  catalogs: L3SMI
+# Reference Class: "TopCatalogRef"
+#   verbose_mode: FALSE
+#   tries: 3
+#   xpath_ns: thredds
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/catalog.xml
+#   children: service dataset
+#   catalogs [1]: L3SMI
+#   datasets [1]: /MODISA
 ```
 
 Next we select the L3SMI catalog. (yes, it is the only subcatalog) 
 [web](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/contents.html) 
 [catalog.xml](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/catalog.xml)
 
-```R
+```
 catalogs <- MODISA$get_catalogs()
 L3SMI <- catalogs[['L3SMI']]$GET()
 L3SMI
-Reference Class: "TopCatalogRef"
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/catalog.xml
-  children: service dataset
-  catalogs: 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015
+# Reference Class: "TopCatalogRef"
+#   verbose_mode: FALSE
+#   tries: 3
+#   xpath_ns: thredds
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/catalog.xml
+#   children: service dataset
+#   catalogs [18]: 2002 2003 ... 2018 2019
+#   datasets [1]: /MODISA/L3SMI
 ```
 
 Next we select the 2015 catalog. 
 [web](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/contents.html) 
 [catalog.xml](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/catalog.xml)
 
-```R
+```
 YEARS <- L3SMI$get_catalogs()
 Y2015 <- YEARS[['2015']]$GET()
 Y2015
-Reference Class: "TopCatalogRef" 
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/catalog.xml
-  children: service dataset
-  catalogs: 001 002 003 ... 197 198 199 200 201
+# Reference Class: "TopCatalogRef"
+#   verbose_mode: FALSE
+#   tries: 3
+#   xpath_ns: thredds
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/catalog.xml
+#   children: service dataset
+#   catalogs [365]: 001 002 ... 364 365
+#   datasets [1]: /MODISA/L3SMI/2015
 ```  
 
 And now we select the most recent day (let's assume that is day 201) 
 [web](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/contents.html) 
 [catalog.xml](https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/catalog.xml)
 
-```R
+```
 DAYS <- Y2015$get_catalogs()
 D201 <- DAYS[['201']]$GET()
 D201
-Reference Class: "TopCatalogRef" 
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/catalog.xml
-  children: service dataset
-  datasets: A2015201.L3m_DAY_NSST_sst_4km.nc A2015201.L3m_DAY_NSST_sst_9km.nc A2015201.L3m_DAY_SST4_sst4_4km.nc A2015201.L3m_DAY_SST4_sst4_9km.nc
+# Reference Class: "TopCatalogRef"
+#   verbose_mode: FALSE
+#   tries: 3
+#   xpath_ns: thredds
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/catalog.xml
+#   children: service dataset
+#   datasets [357]: A2015201.L3m_DAY_CHL_chl_ocx_4km.nc A2015201.L3m_DAY_CHL_chl_ocx_9km.nc ... # A20152012015232.L3m_R32_ZLEE_Zeu_lee_4km.nc A20152012015232.L3m_R32_ZLEE_Zeu_lee_9km.nc
+#   datasets [358]: /MODISA/L3SMI/2015/201 A2015201.L3m_DAY_CHL_chl_ocx_4km.nc ... A20152012015232.L3m_R32_ZLEE_Zeu_lee_4km.nc # A20152012015232.L3m_R32_ZLEE_Zeu_lee_9km.nc
 ```
 
-So that brings us to our 'deepest' penetration into the organization showing just 4 items.  We can retrieve the datasets.
+So that brings us to our 'deepest' penetration into the organization.  We can retrieve the datasets.
 
-```R
+```
 datasets <- D201$get_datasets()
-datasets
-$A2015201.L3m_DAY_NSST_sst_4km.nc
-Reference Class: "DatasetRefClass"
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_4km.nc
-  children: dataSize date access
-  dataSize:47093655
-  date:2015-08-05T11:28:29
-  serviceName:dap
-  urlPath:/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_4km.nc
-
-$A2015201.L3m_DAY_NSST_sst_9km.nc
-Reference Class: "DatasetRefClass"
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_9km.nc
-  children: dataSize date access
-  dataSize:12376940
-  date:2015-08-05T11:28:41
-  serviceName:dap
-  urlPath:/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_NSST_sst_9km.nc
-
-$A2015201.L3m_DAY_SST4_sst4_4km.nc
-Reference Class: "DatasetRefClass"
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_4km.nc
-  children: dataSize date access
-  dataSize:47143175
-  date:2015-08-05T11:22:01
-  serviceName:dap
-  urlPath:/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_4km.nc
-
-$A2015201.L3m_DAY_SST4_sst4_9km.nc
-Reference Class: "DatasetRefClass"
-  url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_9km.nc
-  children: dataSize date access
-  dataSize:12441580
-  date:2015-08-05T11:22:14
-  serviceName:dap
-  urlPath:/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_SST4_sst4_9km.nc
+datasets[1:4]
+# $A2015201.L3m_DAY_CHL_chl_ocx_4km.nc
+# Reference Class: "DatasetRefClass"
+#   verbose_mode: FALSE
+#   tries: 3
+#   xpath_ns: thredds
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_CHL_chl_ocx_4km.nc
+#   children: dataSize date access
+#   datasets: NA
+#   dataSize: 9422056
+#   date: 2018-01-01T01:50:04
+#   serviceName: dap
+#   urlPath: /MODISA/L3SMI/2015/201/A2015201.L3m_DAY_CHL_chl_ocx_4km.nc
+# 
+# $A2015201.L3m_DAY_CHL_chl_ocx_9km.nc
+# Reference Class: "DatasetRefClass"
+#   verbose_mode: FALSE
+#   tries: 3
+#   xpath_ns: thredds
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_CHL_chl_ocx_9km.nc
+#   children: dataSize date access
+#   datasets: NA
+#   dataSize: 3629459
+#   date: 2018-01-01T01:50:17
+#   serviceName: dap
+#   urlPath: /MODISA/L3SMI/2015/201/A2015201.L3m_DAY_CHL_chl_ocx_9km.nc
+# 
+# $A2015201.L3m_DAY_CHL_chlor_a_4km.nc
+# Reference Class: "DatasetRefClass"
+#   verbose_mode: FALSE
+#   tries: 3
+#   xpath_ns: thredds
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_CHL_chlor_a_4km.nc
+#   children: dataSize date access
+#   datasets: NA
+#   dataSize: 9348505
+#   date: 2018-01-01T01:50:30
+#   serviceName: dap
+#   urlPath: /MODISA/L3SMI/2015/201/A2015201.L3m_DAY_CHL_chlor_a_4km.nc
+# 
+# $A2015201.L3m_DAY_CHL_chlor_a_9km.nc
+# Reference Class: "DatasetRefClass"
+#   verbose_mode: FALSE
+#   tries: 3
+#   xpath_ns: thredds
+#   url: https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/2015/201/A2015201.L3m_DAY_CHL_chlor_a_9km.nc
+#   children: dataSize date access
+#   datasets: NA
+#   dataSize: 3614233
+#   date: 2018-01-01T01:50:42
+#   serviceName: dap
+#   urlPath: /MODISA/L3SMI/2015/201/A2015201.L3m_DAY_CHL_chlor_a_9km.nc
 ```
-
