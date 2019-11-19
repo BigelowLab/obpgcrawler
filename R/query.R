@@ -1,3 +1,62 @@
+#' Convert jjj day numbers to mmdd or the reverse
+#'
+#' @export
+#' @param x days of year (1-366), month-days (0101-1231) or dates
+#' \itemize{
+#' \item{day of year, generally a three-digit character, but we try to cast it
+#'       if numeric are passed.  It's best to not pass numerics.}
+#' \item{month-day, generally a four-digit character, but we try to cast it
+#'       if numeric are passed.  It's best to not pass numerics here either.}
+#' \item{Date or POSIXt, if one of these then \code{form} and \code{year} are ignored.}
+#' }
+#' @param year one or more years to associate with each day of year or month-day.
+#'     If shorter than \code{x} then \code{year} is recycled.  Ignored if
+#'     \code{x} is a date time class.
+#' @param form character either 'mmdd', 'jjj'  Ignored if \code{x} is of class
+#'    Date or POSIXt
+#' @return tibble with these variables
+#' \itemize{
+#'   \item{date Date class objects}
+#'   \item{year character four digit year}
+#'   \item{jjj character three digit day of year}
+#'   \item{mmdd character 4 digit month and day}
+#' }
+obpg_date <- function(x = Sys.Date()-1,
+                      year = format(Sys.Date(), "%Y"),
+                      form = c("mmdd", "jjj")[1]){
+
+
+  if (inherits(x, 'Date') || inherits(x, 'POSIXt')){
+    date <- x
+    mmdd <- format(date, "%m%d")
+    jjj <- format(date, "%j")
+  } else {
+    if (!inherits(year, 'character')) year <- sprintf("%0.4i", year)
+    if (tolower(form[1]) == 'jjj'){
+      if (!inherits(x, 'character')){
+        jjj <- sprintf("%0.3i", x)
+      } else {
+        jjj <- x
+      }
+      date <- as.Date(paste0(year, jjj), format = "%Y%j")
+      mmdd <- format(date, "%m%d")
+    } else {
+      if (!inherits(x, 'character')){
+        mmdd <- sprintf("%0.4i", x)
+      } else {
+        mmdd <- x
+      }
+      date <- as.Date(paste0(year, mmdd), format = '%Y%m%d')
+      jjj <- format(date, "%j")
+    }
+  }
+
+  dplyr::tibble(
+    date,
+    year = format(date, '%Y'),
+    jjj,
+    mmdd)
+}
 
 
 
@@ -8,9 +67,9 @@
 #' @param platform character, the name of the platform (MODISA, MODIST, OCTS, SeaWiFS, VIIRS, etc.)
 #' @param product character, the product type (L3SMI, etc.)
 #' @param year character or numeric, four digit year(s) - ignored if \code{when} is not 'all'
-#' @param mmdd character or numeric, 4 digit month-day - ignored if \code{when} is not 'all'.
-#'    You can improve efficiency by preselecting days for months, days, or
-#'    seasons using \code{year} and \code{mmdd}
+#' @param day character or numeric, either 'jjj' or 'mmdd' form. Ignored if \code{when} is not
+#'    'all'. You can improve efficiency by preselecting days for months, days, or
+#'    seasons using \code{year} and \code{day}
 #' @param when character, optional filters
 #'   \itemize{
 #'       \item{all - return all occurences, the default, used with year and day, date_filter = NULL}
@@ -29,6 +88,8 @@
 #' @param verbose logical, by default FALSE
 #' @param userpassword character, a two element named vector with elements "user"
 #'        and "password"
+#' @param day_form character either 'jjj' or 'mmdd' indicating the day request format.
+#'    This is passed to \code{\link{obpg_date}} as \code{form} as required.
 #' @return list of DatasetRefClass or NULL
 #' @examples
 #'    \dontrun{
@@ -54,24 +115,27 @@ obpg_query <- function(
    platform = 'MODISA',
    product = 'L3SMI',
    year = format(Sys.Date(), "%Y"),
-   mmdd = format(Sys.Date(), "%m%d"),
+   day = format(Sys.Date(), "%m%d"),
    when = c("all", "any", "most_recent", "within", "before", "after")[1],
    date_filter = NULL,
    greplargs = NULL,
    verbose = FALSE,
-   userpassword = c(user = 'user', password = 'password')) {
+   userpassword = c(user = 'user', password = 'password'),
+   day_form = c('mmdd', 'jjj')[1]) {
 
   # Used to scan all/any days for the listed year
   # Product CatalogRefClass
-  # year one or more character in YYYY format
-  # mmdd one or more charcater in format mmdd
+  # dates tibble as produced by obpg_date
   # greplargs list of one or more grepl args
-  get_all_obpg <- function(Product, year, mmdd, greplargs = NULL, verbose = FALSE) {
-    if (!is.character(year)) year <- sprintf("%0.4i", year)
+  get_all_obpg <- function(Product,
+                           dates = obpg_date(),
+                           greplargs = NULL,
+                           verbose = Product$verbose_mode) {
+    #if (!is.character(year)) year <- sprintf("%0.4i", year)
     R <- NULL
-    YY <- Product$get_catalog()$get_catalogs(year)
+    YY <- Product$get_catalog()$get_catalogs(dates$year)
     for (iy in seq_along(YY)){
-      DD <- YY[[iy]]$get_catalog()$get_catalogs(mmdd)
+      DD <- YY[[iy]]$get_catalog()$get_catalogs(c(dates$mmdd, dates$jjj))
       for (D in DD){
         dd <- D$get_catalog()$get_datasets()
         if (!is.null(greplargs)){
@@ -103,10 +167,7 @@ obpg_query <- function(
       return(NULL)
    }
 
-   if (is.numeric(year)) year <- sprintf("%0.4i",year)
-   if (is.numeric(mmdd)) mmdd <- sprintf("%0.4i", mmdd)
-   if (inherits(mmdd, 'Date') || inherits(mmdd, 'POSIXct')) mmdd <- format(mmdd, '%m%d')
-
+   dates <- obpg_date(day, year = year, form = day_form[1])
    when <- tolower(when[1])
    R <- list()
 
@@ -135,44 +196,37 @@ obpg_query <- function(
    } else if (when %in% c('within', "before", "after")){
 
       if (is.null(date_filter)){
-         cat("if when is 'within', 'before' or 'after' then date_filter must be provided\n")
+         warning("If when is 'within', 'before' or 'after' then date_filter must be provided. Returning NULL\n")
          return(NULL)
       }
       if ((when == 'within') && (length(date_filter) < 2) ) {
-         cat("if when is 'within' then date_filter have [begin,end] elements\n")
+         warning("If when is 'within' then date_filter have [begin,end] elements. Returning NULL\n")
          return(NULL)
       }
       if (!inherits(date_filter, "POSIXt") && !inherits(date_filter, "Date")){
-         cat("if when is 'within', 'before' or 'after' then date_filter must be POSIXt or Date class\n")
+         cat("If when is 'within', 'before' or 'after' then date_filter must be date/time class. Returning NULL\n")
          return(NULL)
       }
 
       # compute the beginning and end
+      if (inherits(date_filter, 'Date')){
+        now <- Sys.Date()
+        then <- as.Date("1990-01-01")
+      } else {
+        now <- as.POSIXct(Sys.time(), tz = 'UTC')
+        then <- as.POSIXct("1990-01-01 00:00:00", tz = 'UTC')
+      }
+     # make sure the filter is setup
       tbounds <-   switch(tolower(when),
             'within' = date_filter[1:2],
-            'after' = c(date_filter[1], as.POSIXct(Sys.time())), # from then to present
-            'before' = c( as.POSIXct("1990-01-01 00:00:00"), date_filter[1]) ) # from 1990 to then
+            'after' = c(date_filter[1], now), # from date to now
+            'before' = c(then, date_filter[1]) ) # from 1990 to date
       # convert to daily steps
       tsteps <- seq(tbounds[1], tbounds[2], by = 'day')
-      year <- format(tsteps, "%Y")
-      mmdd <- format(tsteps,"%m%d")
-
-      yd <- split(mmdd, year)
-      # note how this differs from when = 'all', here we explicitly iterate through
-      # the years (days may be different for each year
-      for (i in seq_along(yd)){
-         y <- names(yd)[i]
-         R[[y]] <- get_all_obpg(Product, y, yd[[i]], greplargs = greplargs, verbose = verbose)
-      }
-
-      if (length(R) > 0){
-          R <- unlist(R, use.names = FALSE)
-          names(R) <- sapply(R, function(x) x$name)
-      }
+      dates <- obpg_date(tsteps)
+      R <- get_all_obpg(Product, dates, greplargs = greplargs)
    } else {
-      # any or all
-      # retrieve the days from the years specified
-      R <- get_all_obpg(Product, year, mmdd, greplargs = greplargs)
+      R <- get_all_obpg(Product, dates, greplargs = greplargs)
 
    }
 

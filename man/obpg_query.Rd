@@ -7,10 +7,10 @@
 
   obpg_query(top = "https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
   platform = "MODISA", product = "L3SMI", year = format(Sys.Date(),
-  "\%Y"), mmdd = format(Sys.Date(), "\%m\%d"), when = c("all", "any",
+  "\%Y"), day = format(Sys.Date(), "\%m\%d"), when = c("all", "any",
   "most_recent", "within", "before", "after")[1], date_filter = NULL,
   greplargs = NULL, verbose = FALSE, userpassword = c(user = "user",
-  password = "password"))
+  password = "password"), day_form = c("mmdd", "jjj")[1])
 }
 \arguments{
 \item{top}{character, uri of the top catalog}
@@ -21,9 +21,9 @@
 
 \item{year}{character or numeric, four digit year(s) - ignored if \code{when} is not 'all'}
 
-\item{mmdd}{character or numeric, 4 digit month-day - ignored if \code{when} is not 'all'.
-You can improve efficiency by preselecting days for months, days, or
-seasons using \code{year} and \code{mmdd}}
+\item{day}{character or numeric, either 'jjj' or 'mmdd' form. Ignored if \code{when} is not
+'all'. You can improve efficiency by preselecting days for months, days, or
+seasons using \code{year} and \code{day}}
 
 \item{when}{character, optional filters
 \itemize{
@@ -47,6 +47,9 @@ If \code{fixed} is FALSE then be sure to provide a regex for the pattern value.}
 
 \item{userpassword}{character, a two element named vector with elements "user"
 and "password"}
+
+\item{day_form}{character either 'jjj' or 'mmdd' indicating the day request format.
+This is passed to \code{\link{obpg_date}} as \code{form} as required.}
 }
 \value{
 list of DatasetRefClass or NULL
