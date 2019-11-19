@@ -59,6 +59,35 @@ obpg_date <- function(x = Sys.Date()-1,
 }
 
 
+#' Used to scan all/any days for the listed years
+#'
+#' @export
+#' @param Product CatalogRefClass
+#' @param dates tibble as produced by obpg_date
+#' @param greplargs list of one or more grepl args
+#' @param verbose logical
+#' @return list of zero or more DatasetRefClass objects
+get_all_obpg <- function(Product,
+                         dates = obpg_date(),
+                         greplargs = NULL,
+                         verbose = Product$verbose_mode) {
+  R <- NULL
+  YY <- Product$get_catalog()$get_catalogs(dates$year)
+  for (iy in seq_along(YY)){
+    DD <- YY[[iy]]$get_catalog()$get_catalogs(c(dates$mmdd, dates$jjj))
+    for (D in DD){
+      dd <- D$get_catalog()$get_datasets()
+      if (!is.null(greplargs)){
+        ix <- thredds::grepl_it(names(dd), greplargs)
+        dd <- dd[ix]
+      }
+      R[names(dd)] <- dd
+    } #DD loop
+  } # YY loop
+  return(R)
+}
+
+
 
 #' A basic query function to retrieve one or more datasets
 #'
@@ -123,47 +152,22 @@ obpg_query <- function(
    userpassword = c(user = 'user', password = 'password'),
    day_form = c('mmdd', 'jjj')[1]) {
 
-  # Used to scan all/any days for the listed year
-  # Product CatalogRefClass
-  # dates tibble as produced by obpg_date
-  # greplargs list of one or more grepl args
-  get_all_obpg <- function(Product,
-                           dates = obpg_date(),
-                           greplargs = NULL,
-                           verbose = Product$verbose_mode) {
-    #if (!is.character(year)) year <- sprintf("%0.4i", year)
-    R <- NULL
-    YY <- Product$get_catalog()$get_catalogs(dates$year)
-    for (iy in seq_along(YY)){
-      DD <- YY[[iy]]$get_catalog()$get_catalogs(c(dates$mmdd, dates$jjj))
-      for (D in DD){
-        dd <- D$get_catalog()$get_datasets()
-        if (!is.null(greplargs)){
-            ix <- thredds::grepl_it(names(dd), greplargs)
-            dd <- dd[ix]
-        }
-        R[names(dd)] <- dd
-      } #DD loop
-    } # YY loop
-    return(R)
-  }
-
 
    Top <- thredds::get_catalog(top[1], verbose = verbose, ns = "thredds")
    if (is.null(Top)) {
-      cat("error getting catalog for", top[1], "\n")
+      warning("error getting catalog for", top[1], " Returning NULL\n")
       return(NULL)
    }
 
    Platform <- Top$get_catalogs()[[platform[1]]]$get_catalog()
    if (is.null(Platform)) {
-      cat("error getting catalog for", platform[1], "\n")
+      cat("error getting catalog for", platform[1], " Returning NULL\n")
       return(NULL)
    }
 
    Product <- Platform$get_catalogs(product[1])[[1]]
    if (is.null(Product)) {
-      cat("error getting catalog for", product[1], "\n")
+      cat("error getting catalog for", product[1], " Returning NULL\n")
       return(NULL)
    }
 
