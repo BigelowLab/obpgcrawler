@@ -137,6 +137,12 @@ get_all_obpg <- function(Product,
 #'          greplargs = list(
 #'             chl = list(pattern='8D_CHL_chlor_a_4km', fixed = TRUE),
 #'             sst = list(pattern='8D_SST_sst_4km', fixed = TRUE)) )
+#'      query <- obpg_query(
+#'          platform = "VIIRS",
+#'          year = '2019',
+#'          day = c("008", "009", "010", "011", "012"),
+#'          day_form = "jjj",
+#'          greplargs = list(pattern='DAY.SST.sst', fixed = TRUE))
 #'    }
 #' @seealso \code{\link{get_monthdays}}, \code{\link{get_8days}} and \code{\link{get_seasondays}}
 obpg_query <- function(
