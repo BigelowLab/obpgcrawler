@@ -25,7 +25,8 @@ Useful for retrieving seasonal data.
 \seealso{
 \url{http://oceancolor.gsfc.nasa.gov/BROWSE_HELP/L3/}
 
-Other DAYS: \code{\link{get_8days}},
-  \code{\link{get_monthdays}}
+Other DAYS: 
+\code{\link{get_8days}()},
+\code{\link{get_monthdays}()}
 }
 \concept{DAYS}

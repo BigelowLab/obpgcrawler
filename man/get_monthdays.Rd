@@ -25,7 +25,8 @@ Useful for retrieving monthly data stored ont the first day of each month.
 \seealso{
 \url{http://oceancolor.gsfc.nasa.gov/BROWSE_HELP/L3/}
 
-Other DAYS: \code{\link{get_8days}},
-  \code{\link{get_seasondays}}
+Other DAYS: 
+\code{\link{get_8days}()},
+\code{\link{get_seasondays}()}
 }
 \concept{DAYS}

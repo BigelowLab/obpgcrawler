@@ -3,7 +3,6 @@
 \docType{package}
 \name{obpgcrawler}
 \alias{obpgcrawler}
-\alias{obpgcrawler-package}
 \title{obpgcrawler - programmatic access to Ocean Color OpeNDAP servcies.}
 \description{
 A crawler for programmatically working with the OpeNDAP data offerings from

@@ -6,7 +6,7 @@
 #' \item{day of year, generally a three-digit character, but we try to cast it
 #'       if numeric are passed.  It's best to not pass numerics.}
 #' \item{month-day, generally a four-digit character, but we try to cast it
-#'       if numeric are passed.  It's best to not pass numerics here either.}
+#'       if numerics are passed.  It's best to not pass numerics here either.}
 #' \item{Date or POSIXt, if one of these then \code{form} and \code{year} are ignored.}
 #' }
 #' @param year one or more years to associate with each day of year or month-day.
@@ -74,13 +74,17 @@ get_all_obpg <- function(Product,
   R <- NULL
   YY <- Product$get_catalog()$get_catalogs(dates$year)
   for (iy in seq_along(YY)){
+    if (verbose) cat("querying year: ", YY[[iy]]$title, "\n")
     DD <- YY[[iy]]$get_catalog()$get_catalogs(c(dates$mmdd, dates$jjj))
     for (D in DD){
+      if (verbose) cat("querying day: ", D$title, "\n")
       dd <- D$get_catalog()$get_datasets()
+      if (verbose) cat("found", length(dd), "datasets\n")
       if (!is.null(greplargs)){
         ix <- thredds::grepl_it(names(dd), greplargs)
         dd <- dd[ix]
       }
+      if (verbose) cat("filtered down to", length(dd), "matching datasets\n")
       R[names(dd)] <- dd
     } #DD loop
   } # YY loop
@@ -104,7 +108,8 @@ get_all_obpg <- function(Product,
 #'       \item{all - return all occurences, the default, used with year and day, date_filter = NULL}
 #'       \item{any - same as all}
 #'       \item{most_recent - return only the most recent, date_filter = NULL}
-#'       \item{within - return the occurrences bounded by date_filter first and secomd elements}
+#'       \item{within - return the occurrences bounded by date_filter first and second elements, inclusive}
+#'       \item{between - same as within}
 #'       \item{before - return the occurences prior to the first date_filter element}
 #'       \item{after - return the occurrences after the first date_filter element}
 #'    }
@@ -151,7 +156,7 @@ obpg_query <- function(
    product = 'L3SMI',
    year = format(Sys.Date(), "%Y"),
    day = format(Sys.Date(), "%m%d"),
-   when = c("all", "any", "most_recent", "within", "before", "after")[1],
+   when = c("all", "any", "most_recent", "within", "before", "after", "between")[1],
    date_filter = NULL,
    greplargs = NULL,
    verbose = FALSE,
@@ -177,7 +182,7 @@ obpg_query <- function(
       return(NULL)
    }
 
-   dates <- obpg_date(day, year = year, form = day_form[1])
+   #dates <- obpg_date(day, year = year, form = day_form[1])
    when <- tolower(when[1])
    R <- list()
 
@@ -203,13 +208,13 @@ obpg_query <- function(
          } #years
       }
 
-   } else if (when %in% c('within', "before", "after")){
+   } else if (when %in% c('within', "between", "before", "after")){
 
       if (is.null(date_filter)){
-         warning("If when is 'within', 'before' or 'after' then date_filter must be provided. Returning NULL\n")
+         warning("If when is 'within', 'between', 'before' or 'after' then date_filter must be provided. Returning NULL\n")
          return(NULL)
       }
-      if ((when == 'within') && (length(date_filter) < 2) ) {
+      if ((when %in% c('within', 'between')) && (length(date_filter) < 2) ) {
          warning("If when is 'within' then date_filter have [begin,end] elements. Returning NULL\n")
          return(NULL)
       }
@@ -229,6 +234,7 @@ obpg_query <- function(
      # make sure the filter is setup
       tbounds <-   switch(tolower(when),
             'within' = date_filter[1:2],
+            'between' = date_filter[1:2],
             'after' = c(date_filter[1], now), # from date to now
             'before' = c(then, date_filter[1]) ) # from 1990 to date
       # convert to daily steps
@@ -237,7 +243,6 @@ obpg_query <- function(
       R <- get_all_obpg(Product, dates, greplargs = greplargs)
    } else {
       R <- get_all_obpg(Product, dates, greplargs = greplargs)
-
    }
 
    # if none found then we return NULL (not an empty list)

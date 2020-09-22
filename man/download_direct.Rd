@@ -4,9 +4,14 @@
 \alias{download_direct}
 \title{Download a direct data access file using \code{\link{download.file}}}
 \usage{
-download_direct(filename, output_filename, output_path = ".",
+download_direct(
+  filename,
+  output_filename,
+  output_path = ".",
   base_uri = "https://oceandata.sci.gsfc.nasa.gov/cgi/getfile",
-  mode = "wb", ...)
+  mode = "wb",
+  ...
+)
 }
 \arguments{
 \item{filename}{the name of the file to download - required as 'A2016186.L3m_DAY_CHL_chlor_a_4km.nc'}

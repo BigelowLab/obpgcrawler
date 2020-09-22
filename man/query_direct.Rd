@@ -5,9 +5,16 @@
 \title{Query a direct data download webpage such as 
 \url{http://oceandata.sci.gsfc.nasa.gov/MODIS-Aqua/Mapped/Daily/4km/chlor_a/2016}}
 \usage{
-query_direct(base_uri = "https://oceandata.sci.gsfc.nasa.gov",
-  mission = "MODIS-Aqua", level = "Mapped", freq = "Daily",
-  res = "4km", param = "chlor_a", year = 2016, alt_uri = NULL)
+query_direct(
+  base_uri = "https://oceandata.sci.gsfc.nasa.gov",
+  mission = "MODIS-Aqua",
+  level = "Mapped",
+  freq = "Daily",
+  res = "4km",
+  param = "chlor_a",
+  year = 2016,
+  alt_uri = NULL
+)
 }
 \arguments{
 \item{base_uri}{character Oceandata's base uri (default 'http://oceandata.sci.gsfc.nasa.gov')}

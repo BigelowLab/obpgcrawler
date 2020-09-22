@@ -4,8 +4,10 @@
 \alias{decompose_L3}
 \title{Decompose a new-convention L3 filename}
 \usage{
-decompose_L3(x = c("SNPP_VIIRS.20180703.L3m.DAY.OC.chlor_a.4km.nc",
-  "SNPP_VIIRS.20180703.L3m.DAY.OC.chl_ocx.4km.nc"))
+decompose_L3(
+  x = c("SNPP_VIIRS.20180703.L3m.DAY.OC.chlor_a.4km.nc",
+    "SNPP_VIIRS.20180703.L3m.DAY.OC.chl_ocx.4km.nc")
+)
 }
 \arguments{
 \item{x}{character vector of one or more filenames}

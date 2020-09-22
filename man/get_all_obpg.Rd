@@ -4,8 +4,12 @@
 \alias{get_all_obpg}
 \title{Used to scan all/any days for the listed years}
 \usage{
-get_all_obpg(Product, dates = obpg_date(), greplargs = NULL,
-  verbose = Product$verbose_mode)
+get_all_obpg(
+  Product,
+  dates = obpg_date(),
+  greplargs = NULL,
+  verbose = Product$verbose_mode
+)
 }
 \arguments{
 \item{Product}{CatalogRefClass}

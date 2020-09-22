@@ -4,8 +4,11 @@
 \alias{obpg_date}
 \title{Convert jjj day numbers to mmdd or the reverse}
 \usage{
-obpg_date(x = Sys.Date() - 1, year = format(Sys.Date(), "\%Y"),
-  form = c("mmdd", "jjj")[1])
+obpg_date(
+  x = Sys.Date() - 1,
+  year = format(Sys.Date(), "\%Y"),
+  form = c("mmdd", "jjj")[1]
+)
 }
 \arguments{
 \item{x}{days of year (1-366), month-days (0101-1231) or dates
@@ -13,7 +16,7 @@ obpg_date(x = Sys.Date() - 1, year = format(Sys.Date(), "\%Y"),
 \item{day of year, generally a three-digit character, but we try to cast it
       if numeric are passed.  It's best to not pass numerics.}
 \item{month-day, generally a four-digit character, but we try to cast it
-      if numeric are passed.  It's best to not pass numerics here either.}
+      if numerics are passed.  It's best to not pass numerics here either.}
 \item{Date or POSIXt, if one of these then \code{form} and \code{year} are ignored.}
 }}
 

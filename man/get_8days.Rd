@@ -27,7 +27,8 @@ leap years when finding the last day of 8-day intervals.
 \seealso{
 \url{http://oceancolor.gsfc.nasa.gov/BROWSE_HELP/L3/}
 
-Other DAYS: \code{\link{get_monthdays}},
-  \code{\link{get_seasondays}}
+Other DAYS: 
+\code{\link{get_monthdays}()},
+\code{\link{get_seasondays}()}
 }
 \concept{DAYS}

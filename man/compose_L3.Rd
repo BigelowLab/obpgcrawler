@@ -4,11 +4,19 @@
 \alias{compose_L3}
 \title{Construct an new-convention L3 filename from consituent segments}
 \usage{
-compose_L3(mission = c("MODIS", "S3A", "SNPP", "ADEOS", "SEASTAR")[1],
+compose_L3(
+  mission = c("MODIS", "S3A", "SNPP", "ADEOS", "SEASTAR")[1],
   instrument = c("AQUA", "TERRA", "OLCI", "SEAWIFS", "VIIRS", "OCTS")[1],
-  type = c(NA, "ERR", "GAC", "EFR"), date = Sys.Date(),
-  level = "L3m", period = "DAY", suite = "CHL",
-  product = "chlor_a", nrt = NA, res = "4km", ext = "nc")
+  type = c(NA, "ERR", "GAC", "EFR"),
+  date = Sys.Date(),
+  level = "L3m",
+  period = "DAY",
+  suite = "CHL",
+  product = "chlor_a",
+  nrt = NA,
+  res = "4km",
+  ext = "nc"
+)
 }
 \arguments{
 \item{mission}{character such as 'MODIS'}

@@ -4,13 +4,19 @@
 \alias{obpg_query}
 \title{A basic query function to retrieve one or more datasets}
 \usage{
-
-  obpg_query(top = "https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
-  platform = "MODISA", product = "L3SMI", year = format(Sys.Date(),
-  "\%Y"), day = format(Sys.Date(), "\%m\%d"), when = c("all", "any",
-  "most_recent", "within", "before", "after")[1], date_filter = NULL,
-  greplargs = NULL, verbose = FALSE, userpassword = c(user = "user",
-  password = "password"), day_form = c("mmdd", "jjj")[1])
+obpg_query(
+  top = "https://oceandata.sci.gsfc.nasa.gov/opendap/catalog.xml",
+  platform = "MODISA",
+  product = "L3SMI",
+  year = format(Sys.Date(), "\%Y"),
+  day = format(Sys.Date(), "\%m\%d"),
+  when = c("all", "any", "most_recent", "within", "before", "after", "between")[1],
+  date_filter = NULL,
+  greplargs = NULL,
+  verbose = FALSE,
+  userpassword = c(user = "user", password = "password"),
+  day_form = c("mmdd", "jjj")[1]
+)
 }
 \arguments{
 \item{top}{character, uri of the top catalog}
@@ -30,7 +36,8 @@ seasons using \code{year} and \code{day}}
     \item{all - return all occurences, the default, used with year and day, date_filter = NULL}
     \item{any - same as all}
     \item{most_recent - return only the most recent, date_filter = NULL}
-    \item{within - return the occurrences bounded by date_filter first and secomd elements}
+    \item{within - return the occurrences bounded by date_filter first and second elements, inclusive}
+    \item{between - same as within}
     \item{before - return the occurences prior to the first date_filter element}
     \item{after - return the occurrences after the first date_filter element}
  }}
